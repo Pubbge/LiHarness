@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1040" viewBox="0 0 1240 1040" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" role="img" aria-label="一个对话回合的完整流程">
+<title>一个对话回合的完整流程</title>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+<marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="620" y="42" font-size="24" font-weight="700" text-anchor="middle" fill="#18181b">一个对话回合</text>
+<text x="620" y="68" font-size="14" font-weight="400" text-anchor="middle" fill="#52525b">事件经 SSE 实时推给前端；工具错误、拒绝、审批结果都作为“观察”交还给模型</text>
+<rect x="22.0" y="96" width="156" height="40" rx="10" fill="#e8f7fb" stroke="#0e7490" stroke-width="1.5"/>
+<text x="100.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#0e7490">React 前端</text>
+<line x1="100.0" y1="136" x2="100.0" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="195.33333333333337" y="96" width="156" height="40" rx="10" fill="#ecfdf5" stroke="#047857" stroke-width="1.5"/>
+<text x="273.33333333333337" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#047857">AgentService</text>
+<line x1="273.33333333333337" y1="136" x2="273.33333333333337" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="368.6666666666667" y="96" width="156" height="40" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="446.6666666666667" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#52525b">会话存储</text>
+<line x1="446.6666666666667" y1="136" x2="446.6666666666667" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="542.0" y="96" width="156" height="40" rx="10" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.5"/>
+<text x="620.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#6d28d9">AgentRunner</text>
+<line x1="620.0" y1="136" x2="620.0" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="715.3333333333334" y="96" width="156" height="40" rx="10" fill="#eef4ff" stroke="#1d4ed8" stroke-width="1.5"/>
+<text x="793.3333333333334" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#1d4ed8">模型</text>
+<line x1="793.3333333333334" y1="136" x2="793.3333333333334" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="888.6666666666667" y="96" width="156" height="40" rx="10" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.5"/>
+<text x="966.6666666666667" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#b91c1c">护栏 / 审批</text>
+<line x1="966.6666666666667" y1="136" x2="966.6666666666667" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="1062.0" y="96" width="156" height="40" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="1140.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#52525b">工具</text>
+<line x1="1140.0" y1="136" x2="1140.0" y2="1020" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<line x1="104.0" y1="176" x2="269.33333333333337" y2="176" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="186.66666666666669" y="169" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">POST 回合 + SSE</text>
+<circle cx="78.0" cy="176" r="10" fill="#18181b"/>
+<text x="78.0" y="180.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">1</text>
+<line x1="277.33333333333337" y1="222" x2="442.6666666666667" y2="222" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="360.0" y="215" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">history() · append(user)</text>
+<circle cx="251.33333333333337" cy="222" r="10" fill="#18181b"/>
+<text x="251.33333333333337" y="226.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">2</text>
+<line x1="277.33333333333337" y1="268" x2="616.0" y2="268" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="446.6666666666667" y="261" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">run(请求, 事件出口, 取消令牌)</text>
+<circle cx="251.33333333333337" cy="268" r="10" fill="#18181b"/>
+<text x="251.33333333333337" y="272.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">3</text>
+<line x1="624.0" y1="314" x2="962.6666666666667" y2="314" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="793.3333333333334" y="307" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">checkInput</text>
+<circle cx="598.0" cy="314" r="10" fill="#18181b"/>
+<text x="598.0" y="318.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">4</text>
+<path d="M 620.0 360 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="668.0" y="373" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">组装上下文：system 段落 + 历史 + 输入</text>
+<circle cx="598.0" cy="360" r="10" fill="#18181b"/>
+<text x="598.0" y="364.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">5</text>
+<rect x="30.0" y="400" width="1180.0" height="392" rx="6" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="40.0" y="416" font-size="12" font-weight="600" text-anchor="start" fill="#6d28d9">循环（最多 maxSteps 步）</text>
+<line x1="624.0" y1="438" x2="789.3333333333334" y2="438" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="706.6666666666667" y="431" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">chat(消息, 工具清单)</text>
+<circle cx="598.0" cy="438" r="10" fill="#18181b"/>
+<text x="598.0" y="442.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">6</text>
+<line x1="789.3333333333334" y1="478" x2="104.0" y2="478" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="446.6666666666667" y="471" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">delta 文字增量（SSE）</text>
+<circle cx="78.0" cy="478" r="10" fill="#18181b"/>
+<text x="78.0" y="482.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">7</text>
+<line x1="789.3333333333334" y1="524" x2="624.0" y2="524" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="706.6666666666667" y="517" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">tool_calls</text>
+<circle cx="598.0" cy="524" r="10" fill="#18181b"/>
+<text x="598.0" y="528.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">8</text>
+<line x1="624.0" y1="570" x2="962.6666666666667" y2="570" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="793.3333333333334" y="563" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">checkTool：Allow / Deny / NeedApproval</text>
+<circle cx="598.0" cy="570" r="10" fill="#18181b"/>
+<text x="598.0" y="574.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">9</text>
+<line x1="962.6666666666667" y1="616" x2="104.0" y2="616" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="533.3333333333334" y="609" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">approval_required → 用户点“批准”</text>
+<circle cx="78.0" cy="616" r="10" fill="#18181b"/>
+<text x="78.0" y="620.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">10</text>
+<line x1="624.0" y1="662" x2="1136.0" y2="662" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="880.0" y="655" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">execute(参数, 工作区, 取消令牌)</text>
+<circle cx="598.0" cy="662" r="10" fill="#18181b"/>
+<text x="598.0" y="666.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">11</text>
+<line x1="1136.0" y1="708" x2="624.0" y2="708" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="880.0" y="701" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">观察（结果或错误信息）</text>
+<circle cx="598.0" cy="708" r="10" fill="#18181b"/>
+<text x="598.0" y="712.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">12</text>
+<path d="M 620.0 752 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="668.0" y="765" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">assistant(tool_calls) + tool 消息放回历史，下一步</text>
+<circle cx="598.0" cy="752" r="10" fill="#18181b"/>
+<text x="598.0" y="756.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">13</text>
+<line x1="789.3333333333334" y1="832" x2="624.0" y2="832" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="706.6666666666667" y="825" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">没有 tool_calls → 最终回答</text>
+<circle cx="598.0" cy="832" r="10" fill="#18181b"/>
+<text x="598.0" y="836.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">14</text>
+<line x1="616.0" y1="878" x2="277.33333333333337" y2="878" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="446.6666666666667" y="871" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">TurnResult</text>
+<circle cx="251.33333333333337" cy="878" r="10" fill="#18181b"/>
+<text x="251.33333333333337" y="882.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">15</text>
+<line x1="277.33333333333337" y1="924" x2="442.6666666666667" y2="924" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="360.0" y="917" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">append · 压缩</text>
+<circle cx="251.33333333333337" cy="924" r="10" fill="#18181b"/>
+<text x="251.33333333333337" y="928.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">16</text>
+<line x1="269.33333333333337" y1="970" x2="104.0" y2="970" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="186.66666666666669" y="963" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">done</text>
+<circle cx="78.0" cy="970" r="10" fill="#18181b"/>
+<text x="78.0" y="974.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">17</text>
+</svg>

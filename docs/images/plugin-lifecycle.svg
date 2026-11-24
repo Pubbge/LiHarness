@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="670" viewBox="0 0 1200 670" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" role="img" aria-label="插件生命周期">
+<title>插件生命周期</title>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+<marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="600" y="42" font-size="24" font-weight="700" text-anchor="middle" fill="#18181b">插件生命周期</text>
+<text x="600" y="68" font-size="14" font-weight="400" text-anchor="middle" fill="#52525b">内核每次变化后执行 settle()：反复检查，直到没有插件能再前进一步</text>
+<rect x="60" y="170" width="190" height="70" rx="35" fill="#fafafa" stroke="#a1a1aa" stroke-width="1.5"/>
+<text x="155.0" y="202.0" font-size="17" font-weight="600" text-anchor="middle" fill="#a1a1aa">PENDING</text>
+<text x="155.0" y="220.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">等待依赖就绪</text>
+<rect x="400" y="170" width="190" height="70" rx="35" fill="#eef4ff" stroke="#1d4ed8" stroke-width="1.5"/>
+<text x="495.0" y="202.0" font-size="17" font-weight="600" text-anchor="middle" fill="#1d4ed8">LOADING</text>
+<text x="495.0" y="220.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">正在执行 apply()</text>
+<rect x="740" y="170" width="190" height="70" rx="35" fill="#f0fdf4" stroke="#15803d" stroke-width="1.5"/>
+<text x="835.0" y="202.0" font-size="17" font-weight="600" text-anchor="middle" fill="#15803d">ACTIVE</text>
+<text x="835.0" y="220.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">服务、工具、订阅生效</text>
+<rect x="400" y="380" width="190" height="70" rx="35" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.5"/>
+<text x="495.0" y="412.0" font-size="17" font-weight="600" text-anchor="middle" fill="#b91c1c">FAILED</text>
+<text x="495.0" y="430.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">apply() 抛出异常</text>
+<rect x="740" y="380" width="190" height="70" rx="35" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="835.0" y="412.0" font-size="17" font-weight="600" text-anchor="middle" fill="#52525b">DISPOSED</text>
+<text x="835.0" y="430.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">已卸载，全部注册已撤销</text>
+<line x1="250" y1="205" x2="398" y2="205" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="324.0" y="192" font-size="12.5" font-weight="400" text-anchor="middle" fill="#27272a">inject() 依赖都已就绪</text>
+<line x1="590" y1="205" x2="738" y2="205" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="664.0" y="192" font-size="12.5" font-weight="400" text-anchor="middle" fill="#27272a">apply() 成功</text>
+<line x1="495" y1="240" x2="495" y2="378" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="505" y="312" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">apply() 抛异常</text>
+<line x1="835" y1="240" x2="835" y2="378" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="845" y="312" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">uninstall()</text>
+<path d="M 835 170 C 835 110, 155 110, 155 168" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="495" y="104" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">依赖的服务消失 / reload()：撤销全部注册，回到 PENDING（级联：依赖它的插件同样回到 PENDING）</text>
+<path d="M 400 430 C 200 430, 155 330, 155 242" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="170" y="350" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">reload()</text>
+<text x="170" y="368" font-size="11.5" font-weight="400" text-anchor="start" fill="#52525b">修复配置后重试</text>
+<path d="M 590 415 L 738 415" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="664" y="404" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">uninstall()</text>
+<rect x="60" y="520" width="1080" height="120" rx="12" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.5"/>
+<text x="80" y="548" font-size="15" font-weight="700" text-anchor="start" fill="#6d28d9">为什么卸载能撤销得干干净净：作用域</text>
+<text x="80" y="576" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">apply() 里通过 PluginContext 做的每一件事 —— provide 服务、register 工具 / 护栏 / 段落、on 订阅事件、onDispose 登记资源 —— 都返回一个 Registration，</text>
+<text x="80" y="600" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">并自动记入这个插件的作用域。离开 ACTIVE 时，内核按登记的逆序逐个 close()：后注册的先撤销。</text>
+<text x="80" y="624" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">插件代码因此不需要写任何“反注册”逻辑；一个插件失败（FAILED）也只影响它自己和依赖它的插件。</text>
+</svg>

@@ -1,0 +1,36 @@
+# Java / Maven
+target/
+*.class
+*.jar
+!**/src/**/*.jar
+dependency-reduced-pom.xml
+.mvn/wrapper/maven-wrapper.jar
+
+# Tauri / Rust
+desktop/src-tauri/target/
+desktop/src-tauri/gen/
+desktop/src-tauri/binaries/
+desktop/src-tauri/resources/runtime/
+
+# Node / 前端
+node_modules/
+desktop/dist/
+*.log
+
+# IDE / 系统
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+Thumbs.db
+
+# 本地配置与密钥（千万别提交 API Key）
+config.local.*
+.env
+.env.*
+!.env.example
+
+# 运行时数据
+/data/

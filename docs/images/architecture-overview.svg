@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" role="img" aria-label="LiHarness 总体架构">
+<title>LiHarness 总体架构</title>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+<marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="600" y="42" font-size="24" font-weight="700" text-anchor="middle" fill="#18181b">LiHarness 总体架构</text>
+<text x="600" y="68" font-size="14" font-weight="400" text-anchor="middle" fill="#52525b">Rust 进程管家 + React 本地控制台 + Java 智能体内核</text>
+<rect x="24" y="90" width="1152" height="560" rx="16" fill="#fafafa" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="44" y="114" font-size="13" font-weight="600" text-anchor="start" fill="#71717a">桌面应用（一个安装包）</text>
+<rect x="48" y="130" width="380" height="220" rx="10" fill="#e8f7fb" stroke="#0e7490" stroke-width="1.5"/>
+<text x="238" y="160" font-size="16" font-weight="700" text-anchor="middle" fill="#0e7490">React 19 + TypeScript 工作台</text>
+<text x="238" y="180" font-size="12" font-weight="400" text-anchor="middle" fill="#52525b">运行在系统 WebView 中</text>
+<rect x="68" y="198" width="170" height="34" rx="8" fill="#ffffff" stroke="#67c1d6" stroke-width="1.5"/>
+<text x="153" y="220" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">对话与流式输出</text>
+<rect x="248" y="198" width="170" height="34" rx="8" fill="#ffffff" stroke="#67c1d6" stroke-width="1.5"/>
+<text x="333" y="220" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">时序图 / 上下文面板</text>
+<rect x="68" y="242" width="170" height="34" rx="8" fill="#ffffff" stroke="#67c1d6" stroke-width="1.5"/>
+<text x="153" y="264" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">审批卡片</text>
+<rect x="248" y="242" width="170" height="34" rx="8" fill="#ffffff" stroke="#67c1d6" stroke-width="1.5"/>
+<text x="333" y="264" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">会话列表与工作区</text>
+<rect x="68" y="286" width="170" height="34" rx="8" fill="#ffffff" stroke="#67c1d6" stroke-width="1.5"/>
+<text x="153" y="308" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">插件工作台 / MCP / 技能</text>
+<rect x="248" y="286" width="170" height="34" rx="8" fill="#ffffff" stroke="#67c1d6" stroke-width="1.5"/>
+<text x="333" y="308" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">设置与诊断</text>
+<rect x="48" y="420" width="380" height="210" rx="10" fill="#fff4e6" stroke="#c2410c" stroke-width="1.5"/>
+<text x="238" y="450" font-size="16" font-weight="700" text-anchor="middle" fill="#c2410c">Rust 进程管家（Tauri 2）</text>
+<rect x="68" y="468" width="170" height="36" rx="8" fill="#ffffff" stroke="#f0a068" stroke-width="1.5"/>
+<text x="153" y="491" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">选端口 + 生成一次性令牌</text>
+<rect x="248" y="468" width="170" height="36" rx="8" fill="#ffffff" stroke="#f0a068" stroke-width="1.5"/>
+<text x="333" y="491" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">运行记录原子写入</text>
+<rect x="68" y="516" width="170" height="36" rx="8" fill="#ffffff" stroke="#f0a068" stroke-width="1.5"/>
+<text x="153" y="539" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">回收遗留 Java 进程</text>
+<rect x="248" y="516" width="170" height="36" rx="8" fill="#ffffff" stroke="#f0a068" stroke-width="1.5"/>
+<text x="333" y="539" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">后端启停与优雅关闭</text>
+<rect x="68" y="564" width="170" height="36" rx="8" fill="#ffffff" stroke="#f0a068" stroke-width="1.5"/>
+<text x="153" y="587" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">系统钥匙串（API Key）</text>
+<rect x="248" y="564" width="170" height="36" rx="8" fill="#ffffff" stroke="#f0a068" stroke-width="1.5"/>
+<text x="333" y="587" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">对话框 / 通知 / Git / 诊断</text>
+<rect x="540" y="130" width="612" height="500" rx="10" fill="#eef4ff" stroke="#1d4ed8" stroke-width="1.5"/>
+<text x="846" y="160" font-size="16" font-weight="700" text-anchor="middle" fill="#1d4ed8">Java 智能体内核（JDK 17 · Spring Boot 3.4.1）</text>
+<rect x="560" y="178" width="572" height="96" rx="10" fill="#ecfdf5" stroke="#047857" stroke-width="1.5"/>
+<text x="576" y="202" font-size="14" font-weight="700" text-anchor="start" fill="#047857">Spring Boot 外壳（liharness-app）</text>
+<text x="576" y="226" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">REST 接口 · SSE 事件流 /api/agent/stream · 令牌过滤器（只监听 127.0.0.1）</text>
+<text x="576" y="246" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">H2 文件库 + Flyway · 会话与事件日志 · 设置 · 内存中的密钥</text>
+<text x="576" y="266" font-size="12.5" font-weight="400" text-anchor="start" fill="#27272a">父进程看门狗 · 优雅关闭 · 外部插件加载（独立类加载器）</text>
+<rect x="560" y="290" width="572" height="322" rx="10" fill="#f5f3ff" stroke="#6d28d9" stroke-width="1.5"/>
+<text x="576" y="314" font-size="14" font-weight="700" text-anchor="start" fill="#6d28d9">微内核（liharness-kernel，不依赖 Spring）＋ 插件</text>
+<text x="576" y="336" font-size="12.5" font-weight="400" text-anchor="start" fill="#52525b">插件只依赖 liharness-plugin-api：服务 · 事件 · 可撤销注册 · 级联生命周期</text>
+<rect x="576" y="352" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="639.5" y="374" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">agent-loop</text>
+<rect x="713" y="352" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="776.5" y="374" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">context-core</text>
+<rect x="850" y="352" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="913.5" y="374" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">compaction-core</text>
+<rect x="987" y="352" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="1050.5" y="374" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">session-h2</text>
+<rect x="576" y="398" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="639.5" y="420" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">llm-openai</text>
+<rect x="713" y="398" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="776.5" y="420" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">llm-mock</text>
+<rect x="850" y="398" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="913.5" y="420" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">tools-core</text>
+<rect x="987" y="398" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="1050.5" y="420" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">tools-builtin</text>
+<rect x="576" y="444" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="639.5" y="466" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">guard-core</text>
+<rect x="713" y="444" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="776.5" y="466" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">approval-core</text>
+<rect x="850" y="444" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="913.5" y="466" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">skills</text>
+<rect x="987" y="444" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="1050.5" y="466" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">subagent</text>
+<rect x="576" y="490" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="639.5" y="512" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">mcp</text>
+<rect x="713" y="490" width="127" height="34" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="776.5" y="512" font-size="12.5" font-weight="400" text-anchor="middle" fill="#3f3f46">外部 jar 插件…</text>
+<text x="846" y="598" font-size="12.5" font-weight="400" text-anchor="middle" fill="#6d28d9">万物皆插件：模型、工具、护栏、审批、上下文、会话、MCP、技能、子代理都可替换</text>
+<line x1="428" y1="215" x2="538" y2="215" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="483" y="203" font-size="12.5" font-weight="400" text-anchor="middle" fill="#27272a">HTTP REST + SSE</text>
+<text x="483" y="236" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">Bearer 令牌</text>
+<line x1="238" y1="350" x2="238" y2="418" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)" marker-start="url(#arrS)"/>
+<text x="250" y="382" font-size="12" font-weight="400" text-anchor="start" fill="#18181b">invoke / 事件 backend://status</text>
+<line x1="428" y1="520" x2="538" y2="520" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="483" y="508" font-size="12.5" font-weight="400" text-anchor="middle" fill="#27272a">启动 / 停止</text>
+<text x="483" y="540" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">令牌经环境变量</text>
+<text x="483" y="556" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">推送密钥</text>
+<rect x="540" y="700" width="180" height="64" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="630.0" y="729.0" font-size="15" font-weight="600" text-anchor="middle" fill="#52525b">模型 API</text>
+<text x="630.0" y="747.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">OpenAI 兼容 · HTTPS</text>
+<rect x="740" y="700" width="190" height="64" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="835.0" y="729.0" font-size="15" font-weight="600" text-anchor="middle" fill="#52525b">MCP 服务器</text>
+<text x="835.0" y="747.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">独立子进程 · stdio</text>
+<rect x="950" y="700" width="202" height="64" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="1051.0" y="729.0" font-size="15" font-weight="600" text-anchor="middle" fill="#52525b">应用数据目录</text>
+<text x="1051.0" y="747.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">H2 · 日志 · 插件 · 技能</text>
+<rect x="48" y="700" width="380" height="64" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="238.0" y="729.0" font-size="15" font-weight="600" text-anchor="middle" fill="#52525b">操作系统</text>
+<text x="238.0" y="747.0" font-size="11.5" font-weight="400" text-anchor="middle" fill="#52525b">钥匙串 · 文件管理器 · 通知中心 · git</text>
+<line x1="630" y1="630" x2="630" y2="698" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="835" y1="630" x2="835" y2="698" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="1050" y1="630" x2="1050" y2="698" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="238" y1="630" x2="238" y2="698" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600" y="800" font-size="12.5" font-weight="400" text-anchor="middle" fill="#b91c1c">安全边界：后端只监听回环地址；每次启动一个新令牌，令牌不落盘；API Key 只在系统钥匙串和 Java 内存中</text>
+</svg>

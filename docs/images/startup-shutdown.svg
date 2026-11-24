@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1050" viewBox="0 0 1200 1050" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', sans-serif" role="img" aria-label="LiHarness 启动与退出时序">
+<title>LiHarness 启动与退出时序</title>
+<defs>
+<marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+<marker id="arrS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f3f46"/></marker>
+</defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="600" y="42" font-size="24" font-weight="700" text-anchor="middle" fill="#18181b">启动与退出时序</text>
+<text x="600" y="68" font-size="14" font-weight="400" text-anchor="middle" fill="#52525b">Rust 负责后端进程的整个生命周期；令牌只在内存和环境变量中出现</text>
+<rect x="72.0" y="96" width="156" height="40" rx="10" fill="#f4f4f5" stroke="#52525b" stroke-width="1.5"/>
+<text x="150.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#52525b">用户</text>
+<line x1="150.0" y1="136" x2="150.0" y2="1030" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="372.0" y="96" width="156" height="40" rx="10" fill="#fff4e6" stroke="#c2410c" stroke-width="1.5"/>
+<text x="450.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#c2410c">Rust 进程管家</text>
+<line x1="450.0" y1="136" x2="450.0" y2="1030" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="672.0" y="96" width="156" height="40" rx="10" fill="#eef4ff" stroke="#1d4ed8" stroke-width="1.5"/>
+<text x="750.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#1d4ed8">Java 后端</text>
+<line x1="750.0" y1="136" x2="750.0" y2="1030" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="972.0" y="96" width="156" height="40" rx="10" fill="#e8f7fb" stroke="#0e7490" stroke-width="1.5"/>
+<text x="1050.0" y="120.9" font-size="14" font-weight="600" text-anchor="middle" fill="#0e7490">React 前端</text>
+<line x1="1050.0" y1="136" x2="1050.0" y2="1030" stroke="#a1a1aa" stroke-width="1.2" stroke-dasharray="4 4"/>
+<rect x="80.0" y="150" width="1040.0" height="488" rx="6" fill="#f0fdf4" stroke="#15803d" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="90.0" y="166" font-size="12" font-weight="600" text-anchor="start" fill="#15803d">启动</text>
+<line x1="154.0" y1="192" x2="446.0" y2="192" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="300.0" y="185" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">打开应用</text>
+<circle cx="128.0" cy="192" r="10" fill="#18181b"/>
+<text x="128.0" y="196.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">1</text>
+<path d="M 450.0 236 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="498.0" y="249" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">读取上次的运行记录，PID 仍存活且命令行是我们的 jar → 关闭它</text>
+<circle cx="428.0" cy="236" r="10" fill="#18181b"/>
+<text x="428.0" y="240.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">2</text>
+<path d="M 450.0 288 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="498.0" y="301" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">TcpListener 绑定 127.0.0.1:0 选端口；生成一次性令牌</text>
+<circle cx="428.0" cy="288" r="10" fill="#18181b"/>
+<text x="428.0" y="292.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">3</text>
+<line x1="454.0" y1="340" x2="746.0" y2="340" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600.0" y="333" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">启动子进程（端口参数 + 令牌环境变量）</text>
+<circle cx="428.0" cy="340" r="10" fill="#18181b"/>
+<text x="428.0" y="344.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">4</text>
+<path d="M 450.0 384 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="498.0" y="397" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">原子写入运行记录（PID / 端口 / JAR，不含令牌）</text>
+<circle cx="428.0" cy="384" r="10" fill="#18181b"/>
+<text x="428.0" y="388.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">5</text>
+<line x1="454.0" y1="436" x2="746.0" y2="436" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600.0" y="429" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">轮询 GET /api/health（带令牌，最多 60 秒）</text>
+<circle cx="428.0" cy="436" r="10" fill="#18181b"/>
+<text x="428.0" y="440.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">6</text>
+<line x1="746.0" y1="476" x2="454.0" y2="476" stroke="#3f3f46" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+<text x="600.0" y="469" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">200 OK</text>
+<circle cx="428.0" cy="476" r="10" fill="#18181b"/>
+<text x="428.0" y="480.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">7</text>
+<line x1="454.0" y1="520" x2="746.0" y2="520" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600.0" y="513" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">从系统钥匙串读出密钥，PUT /api/secrets/{name}</text>
+<circle cx="428.0" cy="520" r="10" fill="#18181b"/>
+<text x="428.0" y="524.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">8</text>
+<line x1="454.0" y1="564" x2="1046.0" y2="564" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="750.0" y="557" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">事件 backend://status = ready { baseUrl, token }</text>
+<circle cx="428.0" cy="564" r="10" fill="#18181b"/>
+<text x="428.0" y="568.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">9</text>
+<line x1="1046.0" y1="608" x2="754.0" y2="608" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="900.0" y="601" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">REST + SSE（Authorization: Bearer 令牌）</text>
+<circle cx="728.0" cy="608" r="10" fill="#18181b"/>
+<text x="728.0" y="612.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">10</text>
+<rect x="80.0" y="660" width="1040.0" height="360" rx="6" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="90.0" y="676" font-size="12" font-weight="600" text-anchor="start" fill="#b91c1c">退出</text>
+<line x1="154.0" y1="708" x2="446.0" y2="708" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="300.0" y="701" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">关闭窗口 → RunEvent::Exit</text>
+<circle cx="128.0" cy="708" r="10" fill="#18181b"/>
+<text x="128.0" y="712.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">11</text>
+<line x1="454.0" y1="752" x2="746.0" y2="752" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="600.0" y="745" font-size="12.5" font-weight="400" text-anchor="middle" fill="#18181b">POST /api/admin/shutdown</text>
+<circle cx="428.0" cy="752" r="10" fill="#18181b"/>
+<text x="428.0" y="756.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">12</text>
+<path d="M 750.0 792 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="798.0" y="805" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">取消进行中的回合，Spring 优雅关闭</text>
+<circle cx="728.0" cy="792" r="10" fill="#18181b"/>
+<text x="728.0" y="796.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">13</text>
+<path d="M 450.0 844 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="498.0" y="857" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">等待最多 5 秒；仍未退出 → 结束进程（TERM → KILL / taskkill）</text>
+<circle cx="428.0" cy="844" r="10" fill="#18181b"/>
+<text x="428.0" y="848.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">14</text>
+<path d="M 450.0 896 h 40 v 18 h -36" fill="none" stroke="#3f3f46" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="498.0" y="909" font-size="12.5" font-weight="400" text-anchor="start" fill="#18181b">删除运行记录</text>
+<circle cx="428.0" cy="896" r="10" fill="#18181b"/>
+<text x="428.0" y="900.5" font-size="11.5" font-weight="700" text-anchor="middle" fill="#ffffff">15</text>
+<rect x="540" y="938" width="560" height="64" rx="8" fill="#ffffff" stroke="#b91c1c" stroke-width="1.2"/>
+<text x="556" y="958" font-size="12.5" font-weight="600" text-anchor="start" fill="#b91c1c">兜底：Rust 被强制结束（来不及执行第 11–15 步）</text>
+<text x="556" y="980" font-size="12" font-weight="400" text-anchor="start" fill="#18181b">Java 的父进程看门狗发现 PARENT_PID 消失 → 自行退出；下次启动由第 2 步清理残留</text>
+</svg>
