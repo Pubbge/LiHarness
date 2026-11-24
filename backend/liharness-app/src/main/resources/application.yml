@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: li-harness
+  main:
+    banner-mode: off
+  lifecycle:
+    timeout-per-shutdown-phase: 5s
+
+server:
+  address: 127.0.0.1          # 只监听本机回环地址
+  shutdown: graceful          # 关闭时等进行中的请求完成
+
+li-harness:
+  data-dir: ${user.home}/.liharness-dev
+  token: ${LIHARNESS_TOKEN:}
+  parent-pid: ${LIHARNESS_PARENT_PID:}
+
+---
+# 开发模式：在 IDE 里直接运行，端口与令牌固定，方便 curl 调试
+spring:
+  config:
+    activate:
+      on-profile: dev
+server:
+  port: 8765
+li-harness:
+  token: dev-token
+
+---
+# 托管模式：由桌面外壳启动，端口、数据目录、令牌、父进程都由外壳传入
+spring:
+  config:
+    activate:
+      on-profile: standalone

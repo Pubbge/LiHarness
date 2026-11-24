@@ -72,7 +72,7 @@ Tauri 的后端只能是 Rust，所以 Java 以**独立子进程**运行，由 R
 | 依赖 | 用途 | 引入章节 |
 |---|---|---|
 | `spring-boot-starter-web` | REST、SSE（`SseEmitter`） | 01 |
-| `spring-boot-starter-jdbc` + `h2` + `flyway-core` | 本地数据库 | 01（接入）、12（会话表） |
+| `spring-boot-starter-jdbc` + `h2` + `flyway-core` | 本地数据库 | 12 |
 | `jackson-databind` | JSON（Spring Boot 3.4 使用 Jackson 2） | 05 |
 | JUnit 5 + AssertJ | 测试 | 01 |
 | 外部插件 / MCP / 技能 | 不引入新依赖：`URLClassLoader`、`ProcessBuilder` + Jackson 实现 | 14–16 |

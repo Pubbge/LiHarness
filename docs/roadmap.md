@@ -9,7 +9,7 @@
 | | 里程碑 | 教程 | 交付物 | 验收 |
 |---|---|---|---|---|
 | ⬜ | M0 环境 | [00](guide/00-setup.md) | JDK 17、Node、Rust、Tauri 依赖 | 版本检查全部通过 |
-| ⬜ | M1 后端骨架 | [01](guide/01-backend-skeleton.md) | Maven 多模块、Spring Boot 3.4.1 应用、standalone profile、H2、令牌过滤器、父进程看门狗、关闭接口 | `curl` 带令牌访问 `/api/health` 返回 UP，不带令牌返回 401 |
+| ⬜ | M1 后端骨架 | [01](guide/01-backend-skeleton.md) | Maven 多模块、Spring Boot 3.4.1 应用、standalone profile、令牌过滤器、父进程看门狗、关闭接口 | `curl` 带令牌访问 `/api/health` 返回 UP，不带令牌返回 401 |
 | ⬜ | M2 桌面骨架 | [02](guide/02-desktop-shell.md) | Tauri 2 + React 19；Rust 进程管家：选端口、运行记录、回收遗留进程、启动、健康轮询、优雅退出 | 打开应用自动拉起后端，窗口显示“后端已就绪”；关闭应用后没有残留 Java 进程 |
 | ⬜ | M3 流式通道 | [03](guide/03-streaming.md) | `/api/agent/stream` SSE；Tauri HTTP 插件流式读取；前端事件归一化 | 窗口里逐字显示后端推送的假数据 |
 
@@ -30,7 +30,7 @@
 |---|---|---|---|---|
 | ⬜ | M10 执行观测 | [10](guide/10-observability.md) | Trace 事件、执行时序图、停止生成 | 每一步调用实时出现在时序图上 |
 | ⬜ | M11 护栏与审批 | [11](guide/11-guardrails-approval.md) | `GuardChain`、`ApprovalGate`、`run_command`、审批卡片 | 白名单外命令弹出审批；120 秒超时自动拒绝 |
-| ⬜ | M12 会话持久化 | [12](guide/12-sessions.md) | `session-h2`：追加式事件日志、Flyway、多会话、钥匙串存 Key | 重启后会话还在；可回放一次回合 |
+| ⬜ | M12 会话持久化 | [12](guide/12-sessions.md) | 引入 H2 + Flyway；`session-h2`：追加式事件日志、多会话、钥匙串存 Key | 重启后会话还在；可回放一次回合 |
 | ⬜ | M13 上下文压缩 | [13](guide/13-compaction.md) | `compaction-core`：阈值摘要、滑动窗口兜底 | 长对话自动压缩且保持连贯 |
 
 ## 阶段四：生态（万物皆插件）
