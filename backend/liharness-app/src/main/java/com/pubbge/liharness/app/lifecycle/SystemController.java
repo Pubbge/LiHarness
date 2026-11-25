@@ -1,9 +1,8 @@
-package com.pubbge.liharness.app.controller;
+package com.pubbge.liharness.app.lifecycle;
 
 import java.time.Instant;
 import java.util.Map;
 
-import com.pubbge.liharness.app.ShutdownCoordinator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -1,4 +1,4 @@
-package com.pubbge.liharness.app.controller;
+package com.pubbge.liharness.app.lifecycle;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

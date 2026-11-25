@@ -1,7 +1,7 @@
-package com.pubbge.liharness.app;
+package com.pubbge.liharness.app.lifecycle;
 
-import com.pubbge.liharness.app.properties.LiHarnessProperties;
-import com.pubbge.liharness.app.support.ParentWatchdog;
+import com.pubbge.liharness.app.config.LiHarnessProperties;
+
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

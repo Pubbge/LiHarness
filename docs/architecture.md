@@ -33,6 +33,8 @@
 
 **规则：插件只能依赖 `plugin-api`。** 详见 [插件架构](plugin-architecture.md)。
 
+`liharness-app` 内部**按功能分包**（`config` / `security` / `lifecycle` / `agent` / `session` / `settings` / `plugin`），而不是按 controller / service 分层：改一个功能只动一个目录，只在包内使用的类可以不写 `public`。
+
 ## 4. 启动流程
 
 ![启动与退出时序](images/startup-shutdown.svg)

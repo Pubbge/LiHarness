@@ -1,6 +1,6 @@
-package com.pubbge.liharness.app.filter;
-import com.pubbge.liharness.app.properties.LiHarnessProperties;
-import com.pubbge.liharness.app.support.TokenVerifier;
+package com.pubbge.liharness.app.security;
+
+import com.pubbge.liharness.app.config.LiHarnessProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

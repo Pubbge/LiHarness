@@ -1,4 +1,4 @@
-package com.pubbge.liharness.app.support;
+package com.pubbge.liharness.app.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

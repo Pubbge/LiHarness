@@ -1,4 +1,4 @@
-package com.pubbge.liharness.app;
+package com.pubbge.liharness.app.lifecycle;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;

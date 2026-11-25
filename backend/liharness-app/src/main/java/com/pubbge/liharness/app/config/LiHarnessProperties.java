@@ -1,4 +1,4 @@
-package com.pubbge.liharness.app.properties;
+package com.pubbge.liharness.app.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

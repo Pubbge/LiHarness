@@ -32,6 +32,8 @@ pub fn run() {
     tauri::Builder::default()
         // 模板自带的插件：用系统默认程序打开链接 / 文件。保留。
         .plugin(tauri_plugin_opener::init())
+        // HTTP 插件：前端的 fetch 由 Rust 发出，能访问的地址受 capabilities/default.json 的白名单限制
+        .plugin(tauri_plugin_http::init())
         // setup：窗口创建前执行一次，适合做初始化
         // `|app| { ... }` 是闭包（lambda），app 是应用对象
         .setup(|app| {

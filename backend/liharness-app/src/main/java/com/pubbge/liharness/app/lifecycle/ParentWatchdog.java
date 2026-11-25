@@ -1,4 +1,4 @@
-package com.pubbge.liharness.app.support;
+package com.pubbge.liharness.app.lifecycle;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
