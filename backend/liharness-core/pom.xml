@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.pubbge.liharness</groupId>
+        <artifactId>li-harness-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>li-harness-core</artifactId>
+    <name>LiHarness Core</name>
+    <description>纯 Java 内核：协议、Agent Loop、工具。不依赖 Spring。</description>
+
+    <dependencies>
+        <!-- 版本由根 pom 导入的 Spring Boot BOM 管理。这只是借用它的“版本清单”，并不会引入 Spring -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 构建时检查：core 不允许依赖任何 Spring 的东西。有人不小心加了，mvn package 直接失败 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>core-must-not-depend-on-spring</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>org.springframework</exclude>
+                                        <exclude>org.springframework.*</exclude>
+                                    </excludes>
+                                    <message>liharness-core 必须保持纯 Java，不能依赖 Spring（见 CONTRIBUTING.md 架构规则 1）</message>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

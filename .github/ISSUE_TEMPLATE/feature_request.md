@@ -12,9 +12,8 @@ labels: enhancement
 ## 考虑过的替代方案
 
 ## 影响范围
-- [ ] plugin-api（插件接口）
-- [ ] kernel（微内核）
-- [ ] 内置插件（模型 / 工具 / 会话 / 护栏 …）
-- [ ] server（HTTP 接口）
+- [ ] core（智能体内核：循环 / 模型 / 工具 / 会话 / 护栏 …）
+- [ ] app（HTTP 接口 / 设置 / 插件宿主）
+- [ ] plugin-api（插件 SDK，第二阶段）
 - [ ] desktop（Tauri 外壳 / 前端）
 - [ ] 教程文档

@@ -15,6 +15,14 @@
     <name>LiHarness App</name>
 
     <dependencies>
+        <!-- 系统自身包 -->
+        <dependency>
+            <groupId>com.pubbge.liharness</groupId>
+            <artifactId>li-harness-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- springboot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

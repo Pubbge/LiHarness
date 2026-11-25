@@ -39,14 +39,14 @@ Tauri 的后端只能是 Rust，所以 Java 以**独立子进程**运行，由 R
 
 ## 3. 为什么 Spring Boot 只用在应用层
 
-“万物皆插件”要求插件只依赖一个稳定、轻量的契约。如果插件接口里出现 Spring 注解或 `ApplicationContext`，插件就被绑死在 Spring 和它的版本上了，Spring 升级一次，所有插件都受影响。
+智能体内核要能在单元测试、评测程序里直接运行；第二阶段的插件只依赖一个稳定、轻量的 SDK。如果内核或插件接口里出现 Spring 注解或 `ApplicationContext`，它们就被绑死在 Spring 和它的版本上了，Spring 升级一次，所有插件都受影响。
 
 所以：
 
-- `liharness-plugin-api`、`liharness-kernel`：**纯 Java 17**，零第三方依赖（日志用 JDK 自带的 `System.Logger`，Spring Boot 会把它桥接到 Logback）；
-- `liharness-app`：Spring Boot 负责 HTTP、SSE、配置、H2、健康检查，并把内核作为一个普通 Bean 组装起来。
+- `liharness-core`（第一阶段起）、`liharness-plugin-api`（第二阶段）：**纯 Java 17**，除 Jackson 外不引入第三方依赖（日志用 JDK 自带的 `System.Logger`，Spring Boot 会把它桥接到 Logback）；
+- `liharness-app`：Spring Boot 负责 HTTP、SSE、配置、H2、健康检查，并把内核作为普通 Bean 组装起来。
 
-详见 [ADR-0003](adr/0003-framework-agnostic-microkernel.md)。
+内核和扩展点的划分见 [ADR-0007](adr/0007-fixed-core-extension-points.md)。
 
 ## 4. Java 17 的取舍
 
@@ -75,7 +75,7 @@ Tauri 的后端只能是 Rust，所以 Java 以**独立子进程**运行，由 R
 | `spring-boot-starter-jdbc` + `h2` + `flyway-core` | 本地数据库 | 12 |
 | `jackson-databind` | JSON（Spring Boot 3.4 使用 Jackson 2） | 05 |
 | JUnit 5 + AssertJ | 测试 | 01 |
-| 外部插件 / MCP / 技能 | 不引入新依赖：`URLClassLoader`、`ProcessBuilder` + Jackson 实现 | 14–16 |
+| MCP / 技能 / 外部插件 | 不引入新依赖：`ProcessBuilder`、`URLClassLoader` + Jackson 实现 | 12、13、16 |
 
 ### 桌面
 

@@ -1,6 +1,6 @@
 # ADR-0003：与框架无关的插件微内核，Spring Boot 只做应用层
 
-- 状态：已采纳
+- 状态：已废弃（被 [ADR-0007](0007-fixed-core-extension-points.md) 取代）
 - 日期：2026-11-24
 
 ## 背景

@@ -6,7 +6,7 @@
 
 | 类型 | 例子 |
 |---|---|
-| 🧩 新插件 | 新的模型适配器、工具、护栏策略、会话存储 |
+| 🧩 新插件（第二阶段起） | 新的工具、技能、钩子；模型适配等内核能力请直接改 `liharness-core` |
 | 📖 教程勘误 | 错别字、讲错的概念、跑不通的步骤、过时的依赖版本 |
 | 🧭 踩坑记录 | Windows / Linux 上的环境问题与解决办法 |
 | 🐛 Bug 修复 | 先开 Issue 描述复现步骤，再提 PR |
@@ -35,21 +35,22 @@ cd src-tauri && cargo clippy -- -D warnings
 - 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/)：
 
 ```text
-feat(kernel): 服务提供者卸载时级联卸载依赖它的插件
+feat(core): 工具执行前检查工作区边界
 fix(app): SSE 连接断开后释放 Agent 回合
 feat(plugin-llm-openai): 支持 reasoning_content 流式输出
 docs(guide): 第 02 章补充 Windows 下的进程回收说明
 ```
 
-- scope 取值：`plugin-api` / `kernel` / `app` / `plugin-xxx` / `desktop` / `guide` / `docs` / `ci`
+- scope 取值：`core` / `app` / `plugin-api` / `desktop` / `guide` / `docs` / `ci`
 
 ## 架构约定（重要）
 
-1. **`liharness-plugin-api` 是唯一的插件契约。** 插件只能依赖它，不能依赖 `kernel`、`app` 或 Spring。修改它要谨慎，并在 PR 里说明兼容性影响。
-2. **内核不依赖 Spring。** `liharness-kernel` 和 `liharness-plugin-api` 是纯 Java；Spring Boot 只出现在 `liharness-app` 里。
-3. **插件注册的一切都要可撤销。** 注册服务、工具、事件监听都返回 `Registration`，由插件上下文统一回收，插件卸载后不能留下任何东西。
-4. **工具出错不中断 Agent 循环。** 把错误作为观察交给模型，让它自己修正。
-5. **前端不执行命令。** 任何本机操作要么走后端（受护栏与审批约束），要么走 Tauri command（固定的、有限的能力）。
+1. **内核不依赖 Spring。** `liharness-core` 和 `liharness-plugin-api` 是纯 Java；Spring Boot 只出现在 `liharness-app` 里。
+2. **插件只能加能力，不能换内核。** 扩展点只有工具、提示词段落、钩子、事件订阅、技能（见 ADR-0007）。不要为插件开放替换模型适配、Agent 循环、会话存储的接口。
+3. **`liharness-plugin-api` 是唯一的插件契约。** 插件只能依赖它。修改它要谨慎，并在 PR 里说明兼容性影响。
+4. **插件注册的一切都要可撤销。** 每次注册都返回 `Registration`，由插件上下文统一回收，插件停用后不能留下任何东西。
+5. **工具出错不中断 Agent 循环。** 把错误作为观察交给模型，让它自己修正。
+6. **前端不执行命令。** 任何本机操作要么走后端（受护栏与审批约束），要么走 Tauri command（固定的、有限的能力）。
 
 ## 代码风格
 

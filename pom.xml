@@ -12,6 +12,7 @@
 
     <modules>
         <module>backend/liharness-app</module>
+        <module>backend/liharness-core</module>
     </modules>
 
     <properties>
