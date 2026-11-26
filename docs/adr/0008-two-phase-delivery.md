@@ -21,7 +21,7 @@
 
 1. `liharness-core` 不依赖 Spring；
 2. 工具、提示词段落、事件都通过注册表加入，而不是在循环里写死；
-3. 第二阶段把 `Tool` 等几个接口移到 `liharness-plugin-api`，内置工具和插件工具共用同一接口。
+3. `Tool` 接口从第 05 章起就放在独立的 `liharness-plugin-api` 模块里（只依赖 JDK），内置工具、MCP 工具（第 13 章）和第二阶段的插件工具共用同一接口。
 
 ## 后果
 
@@ -31,4 +31,4 @@
 - 每一章都能看到具体的效果
 
 坏的：
-- 第 15 章需要一次重构：把工具接口从 `core` 移到 `plugin-api`。这是有意安排的，也是学习“如何把内部接口变成对外 SDK”的机会
+- 第 15 章还要在 `plugin-api` 里补上 `Plugin`、`PluginContext`、钩子等类型，并把第一阶段里的几个接缝（`ToolGate`、`SystemPromptBuilder`、`ITurnEventListener`）提升为扩展点

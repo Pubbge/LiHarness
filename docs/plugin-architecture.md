@@ -16,7 +16,7 @@
 2. **扩展点都是“集合型”的，没有冲突问题。** 工具可以有一百个，钩子可以有十个。不存在“两个插件都想当 Agent 循环，到底用哪个”的问题，也就不需要依赖排序、提供者栈、级联重载这些复杂机制。
 3. **内核稳定，问题好排查。** 出了问题，循环、存储、模型调用这条主链路永远是同一套代码，不会因为用户装了什么插件而变样。
 
-内核在代码里依然是“接口 + 默认实现”。比如 `SessionStore` 是接口，`H2SessionStore` 是实现。开发者可以改代码换实现，但这是改项目本身，不是插件能力。
+内核在代码里依然是“接口 + 默认实现”。比如 `ISessionRepository` 是接口，`JsonlSessionRepository` 是实现。开发者可以改代码换实现，但这是改项目本身，不是插件能力。
 
 ## 2. 扩展点一览
 
@@ -28,7 +28,7 @@
 | **提示词段落** | `ctx.registerPromptSection(name, order, text)` | 组装系统提示词时按 `order` 排序拼进去 | 都保留，按 `order` 排 |
 | **钩子** | `ctx.registerHook(HookPoint, hook)` | 在固定时机调用，见第 4 节 | 都执行，按安装顺序 |
 | **事件订阅** | `ctx.subscribe(AgentEvent 类型, handler)` | 回合中的每个事件都会广播 | 都收到，互不影响 |
-| **技能** | 插件 jar 里附带 `skills/` 目录 | 和用户技能一起进入技能目录 | 同名技能以用户目录的为准 |
+| **技能** | 插件 jar 里附带 `skills/` 目录 | 和用户技能一起进入技能目录 | 优先级：项目级 > 用户级 > 插件 |
 
 模型不是扩展点。用户在设置页添加模型配置（OpenAI 兼容协议填 Base URL、模型名、Key），这属于**配置**，不需要插件。
 
@@ -78,7 +78,17 @@ public interface PluginContext {
 }
 ```
 
-`Tool`、`ToolSpec`、`ToolContext` 这几个类型在第一阶段就存在于 `core` 里；第 15 章把它们移到 `plugin-api`，`core` 反过来依赖 `plugin-api`。这样内置工具和插件工具用的是同一个接口。
+`Tool`、`ToolContext`、`ToolResult`、`ToolArgs`、`ToolException` 从第 05 章起就在 `plugin-api` 里（`com.pubbge.liharness.domain.spi.tool`），`core` 依赖 `plugin-api`。内置工具、MCP 工具（第 13 章）和插件工具用的是同一个接口。第 15 章只是在旁边加上 `Plugin`、`PluginContext`、钩子等类型。
+
+第一阶段里已经存在、第 15 章要“提升”为扩展点的接缝：
+
+| 第一阶段的代码 | 第 15 章变成 |
+|---|---|
+| `TurnTools.forTurn()` 每个回合组装工具 | 加上所有已启用插件注册的工具 |
+| `SystemPromptBuilder` + 段落顺序（100…900，中间留空） | `registerPromptSection` 插入段落 |
+| `ToolGate`（第 09 章的规则链） | `PRE_TOOL_USE` 钩子包装成一个 gate |
+| `ITurnEventListener.compose(...)` | `subscribe` 的事件分发 |
+| `SkillCatalog.load(userDir, workspace)` | 再加上插件 jar 里附带的技能目录 |
 
 ## 4. 钩子
 
