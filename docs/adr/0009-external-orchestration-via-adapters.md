@@ -15,7 +15,7 @@
 
 | 接入位置 | 接口 | 例子 | 阶段 |
 |---|---|---|---|
-| 模型适配器 | `ILlmPort`（`stream(LlmRequest)` → `LlmStream`） | 写一个 `SpringAiLlmAdapter`，内部调用 Spring AI 的 `ChatClient`，把它的流翻译成我们的 `StreamChunk` | 二（第 14 章的多模型） |
+| 模型适配器 | `LlmChatModelAdapter`（`stream(LlmRequest)` → `LlmStream`） | 写一个 `SpringAiLlmAdapter`，内部调用 Spring AI 的 `ChatClient`，把它的流翻译成我们的 `StreamChunk` | 二（第 15 章的多模型） |
 | 工具 / 子代理 | `Tool`（`liharness-plugin-api`） | 写一个 `AdkAgentTool`：输入一段任务描述，内部运行一个 ADK 多代理流程，返回结果。对主代理来说它和 `task` 子代理一样 | 三 |
 | 外层编排 | 我们的 HTTP 接口（`/api/agent/...`） | ADK 作为外层编排者，把 LiHarness 当作一个“能操作本机的代理”来调用 | 三 |
 

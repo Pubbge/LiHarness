@@ -4,14 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.pubbge.liharness.domain.llm.adapter.port.ILlmPort;
+import com.pubbge.liharness.domain.llm.adapter.port.LlmChatModelAdapter;
 import com.pubbge.liharness.domain.llm.adapter.port.LlmStream;
-import com.pubbge.liharness.domain.llm.model.valobj.FinishReason;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmException;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmRequest;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmResponse;
-import com.pubbge.liharness.domain.llm.model.valobj.Message;
-import com.pubbge.liharness.domain.llm.model.valobj.StreamChunk;
+import com.pubbge.liharness.domain.llm.stream.FinishReason;
+import com.pubbge.liharness.domain.llm.error.LlmException;
+import com.pubbge.liharness.domain.llm.exchange.LlmRequest;
+import com.pubbge.liharness.domain.llm.exchange.LlmResponse;
+import com.pubbge.liharness.domain.llm.message.Message;
+import com.pubbge.liharness.domain.llm.stream.StreamChunk;
 import com.pubbge.liharness.domain.shared.cancel.CancellationToken;
 import com.pubbge.liharness.domain.shared.cancel.CancelledException;
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ class LlmGenerationServiceTest {
     private static final LlmRequest REQUEST = LlmRequest.of("", List.of(Message.user("hi")), List.of());
 
     /** 只返回固定片段的端口，记下流有没有被关闭 */
-    private static final class FixedPort implements ILlmPort {
+    private static final class FixedChatModelAdapter implements LlmChatModelAdapter {
         final AtomicBoolean closed = new AtomicBoolean();
         final LlmStream inner;
 
-        FixedPort(LlmStream inner) {
+        FixedChatModelAdapter(LlmStream inner) {
             this.inner = inner;
         }
 
@@ -58,7 +58,7 @@ class LlmGenerationServiceTest {
 
     @Test
     void observerSeesEveryChunkAndStreamIsClosed() throws Exception {
-        FixedPort port = new FixedPort(LlmStreams.of(List.of(
+        FixedChatModelAdapter port = new FixedChatModelAdapter(LlmStreams.of(List.of(
             new StreamChunk.TextDelta("你"), new StreamChunk.TextDelta("好"),
             new StreamChunk.Finish(FinishReason.END_TURN, "m"))));
         List<StreamChunk> seen = new ArrayList<>();
@@ -72,7 +72,7 @@ class LlmGenerationServiceTest {
 
     @Test
     void errorsPropagateAndStreamIsStillClosed() {
-        FixedPort port = new FixedPort(LlmStreams.failed(new LlmException(LlmException.Kind.RATE_LIMITED, "慢点")));
+        FixedChatModelAdapter port = new FixedChatModelAdapter(LlmStreams.failed(new LlmException(LlmException.Kind.RATE_LIMITED, "慢点")));
         LlmException e = assertThrows(LlmException.class,
             () -> new LlmGenerationService(port).generate(REQUEST, new CancellationToken()));
         assertEquals(LlmException.Kind.RATE_LIMITED, e.kind());
@@ -82,7 +82,7 @@ class LlmGenerationServiceTest {
     @Test
     void cancellingClosesTheStreamAndWakesUpTheReader() throws Exception {
         CountDownLatch closed = new CountDownLatch(1);
-        ILlmPort hanging = new ILlmPort() { // 一直不返回片段的模型
+        LlmChatModelAdapter hanging = new LlmChatModelAdapter() { // 一直不返回片段的模型
             @Override
             public String id() {
                 return "hanging";
@@ -126,7 +126,7 @@ class LlmGenerationServiceTest {
     void alreadyCancelledDoesNotEvenOpenAStream() {
         CancellationToken cancel = new CancellationToken();
         cancel.cancel();
-        FixedPort port = new FixedPort(LlmStreams.of(List.of(new StreamChunk.Finish(FinishReason.END_TURN, ""))));
+        FixedChatModelAdapter port = new FixedChatModelAdapter(LlmStreams.of(List.of(new StreamChunk.Finish(FinishReason.END_TURN, ""))));
         assertThrows(CancelledException.class, () -> new LlmGenerationService(port).generate(REQUEST, cancel));
         assertTrue(!port.closed.get());
     }

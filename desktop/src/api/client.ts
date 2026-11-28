@@ -36,7 +36,21 @@ export async function streamTurn(
     body: JSON.stringify(body),
     signal,
   });
-  if (!res.ok) throw new Error(`请求失败：HTTP ${res.status}`);
+  if (!res.ok) throw new Error(await errorMessage(res));
   // SSE 的 event 名作为 type，再和 data 里的 JSON 字段合并成一个事件对象
   await readSse(res, (m) => onEvent({ type: m.event, ...JSON.parse(m.data) } as AgentEvent));
+}
+
+/**
+ * 从错误响应里取出后端给的说明（比如 409“这个会话正在回答上一个问题”）。
+ * 需要 application.yml 里配置 server.error.include-message: always，Spring 才会把说明放进响应体。
+ */
+export async function errorMessage(res: Response): Promise<string> {
+  try {
+    const body = (await res.json()) as { message?: string };
+    if (body.message) return body.message;
+  } catch {
+    // 响应体不是 JSON，用状态码兜底
+  }
+  return `请求失败：HTTP ${res.status}`;
 }

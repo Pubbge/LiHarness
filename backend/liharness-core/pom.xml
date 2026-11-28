@@ -17,6 +17,22 @@
 
     <dependencies>
         <!-- 版本由根 pom 导入的 Spring Boot BOM 管理。这只是借用它的“版本清单”，并不会引入 Spring -->
+        <!-- 工具接口（第 06 章）。依赖方向：app → core → plugin-api -->
+        <dependency>
+            <groupId>com.pubbge.liharness</groupId>
+            <artifactId>li-harness-plugin-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- JSON：解析模型服务的响应；第 06 章起解析工具参数、读写会话文件（第 05 章） -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- YAML：读 ~/.liharness/settings.yaml 和 .credentials.yaml（第 05 章） -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

@@ -1,6 +1,6 @@
 # 插件与扩展点
 
-> 第二阶段（第 14–17 章）的设计。第一阶段没有插件系统，但代码按这里的边界组织，方便第二阶段直接把扩展点提出来。
+> 第二阶段（第 15–18 章）的设计。第一阶段没有插件系统，但代码按这里的边界组织，方便第二阶段直接把扩展点提出来。
 
 ## 1. 设计原则
 
@@ -78,15 +78,15 @@ public interface PluginContext {
 }
 ```
 
-`Tool`、`ToolContext`、`ToolResult`、`ToolArgs`、`ToolException` 从第 05 章起就在 `plugin-api` 里（`com.pubbge.liharness.domain.spi.tool`），`core` 依赖 `plugin-api`。内置工具、MCP 工具（第 13 章）和插件工具用的是同一个接口。第 15 章只是在旁边加上 `Plugin`、`PluginContext`、钩子等类型。
+`Tool`、`ToolContext`、`ToolResult`、`ToolArgs`、`ToolException` 从第 06 章起就在 `plugin-api` 里（`com.pubbge.liharness.domain.spi.tool`），`core` 依赖 `plugin-api`。内置工具、MCP 工具（第 14 章）和插件工具用的是同一个接口。第 16 章只是在旁边加上 `Plugin`、`PluginContext`、钩子等类型。
 
-第一阶段里已经存在、第 15 章要“提升”为扩展点的接缝：
+第一阶段里已经存在、第 16 章要“提升”为扩展点的接缝：
 
-| 第一阶段的代码 | 第 15 章变成 |
+| 第一阶段的代码 | 第 16 章变成 |
 |---|---|
 | `TurnTools.forTurn()` 每个回合组装工具 | 加上所有已启用插件注册的工具 |
 | `SystemPromptBuilder` + 段落顺序（100…900，中间留空） | `registerPromptSection` 插入段落 |
-| `ToolGate`（第 09 章的规则链） | `PRE_TOOL_USE` 钩子包装成一个 gate |
+| `ToolGate`（第 10 章的规则链） | `PRE_TOOL_USE` 钩子包装成一个 gate |
 | `ITurnEventListener.compose(...)` | `subscribe` 的事件分发 |
 | `SkillCatalog.load(userDir, workspace)` | 再加上插件 jar 里附带的技能目录 |
 

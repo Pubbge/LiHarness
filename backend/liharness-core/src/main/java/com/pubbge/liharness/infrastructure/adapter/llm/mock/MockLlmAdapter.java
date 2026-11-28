@@ -1,17 +1,17 @@
 package com.pubbge.liharness.infrastructure.adapter.llm.mock;
 
-import com.pubbge.liharness.domain.llm.adapter.port.ILlmPort;
+import com.pubbge.liharness.domain.llm.adapter.port.LlmChatModelAdapter;
 import com.pubbge.liharness.domain.llm.adapter.port.LlmStream;
-import com.pubbge.liharness.domain.llm.model.valobj.FinishReason;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmException;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmRequest;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmResponse;
-import com.pubbge.liharness.domain.llm.model.valobj.Message;
-import com.pubbge.liharness.domain.llm.model.valobj.Role;
-import com.pubbge.liharness.domain.llm.model.valobj.StreamChunk;
-import com.pubbge.liharness.domain.llm.model.valobj.TokenUsage;
-import com.pubbge.liharness.domain.llm.model.valobj.ToolCall;
+import com.pubbge.liharness.domain.llm.error.LlmException;
+import com.pubbge.liharness.domain.llm.exchange.LlmRequest;
+import com.pubbge.liharness.domain.llm.exchange.LlmResponse;
+import com.pubbge.liharness.domain.llm.exchange.TokenUsage;
+import com.pubbge.liharness.domain.llm.message.Message;
+import com.pubbge.liharness.domain.llm.message.Role;
 import com.pubbge.liharness.domain.llm.service.LlmStreams;
+import com.pubbge.liharness.domain.llm.stream.FinishReason;
+import com.pubbge.liharness.domain.llm.stream.StreamChunk;
+import com.pubbge.liharness.domain.llm.tool.ToolCall;
 import com.pubbge.liharness.domain.shared.cancel.CancelledException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -31,10 +31,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * </ol>
  * 文本按字符一个一个地流式输出，每个字之间停顿一下，模拟真实模型的速度。
  *
- * <p>它是端口 {@link ILlmPort} 的一个实现，所以放在 infrastructure.adapter.llm 下，和第 07 章的 OpenAI
+ * <p>它是端口 {@link LlmChatModelAdapter} 的一个实现，所以放在 infrastructure.adapter.llm 下，和第 05 章的 OpenAI
  * 适配器并列。领域层只认端口，不知道背后是 Mock 还是真模型。
  */
-public final class MockLlmAdapter implements ILlmPort {
+public final class MockLlmAdapter implements LlmChatModelAdapter {
 
     public static final String ID = "mock";
     static final String TIME_TOOL = "get_time";
@@ -74,7 +74,7 @@ public final class MockLlmAdapter implements ILlmPort {
 
         String input = last.text();
         if (input.startsWith("/fail")) {
-            // 约定：错误从 next() 抛出，而不是从 stream() 抛出（见 ILlmPort 的约定 2）
+            // 约定：错误从 next() 抛出，而不是从 stream() 抛出（见 LlmChatModelAdapter 的约定 2）
             return LlmStreams.failed(new LlmException(LlmException.Kind.SERVER, "Mock 模拟的服务端错误"));
         }
         if (asksForTime(input) && request.hasTool(TIME_TOOL)) {

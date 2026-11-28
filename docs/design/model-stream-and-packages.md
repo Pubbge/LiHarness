@@ -1,6 +1,6 @@
 # 设计评审：模型流式接口 与 包分层
 
-> 状态：**已决定**（2026-11-26）：D1–D7 全部按建议执行，第 04–13 章的代码和教程已按结论重做，结论写成了 [ADR-0011](../adr/0011-pull-based-model-stream.md)（修订版）。实施时和第 8 节相比有几处调整，见文末“第四部分”。
+> 状态：**已决定**（2026-11-26）：D1–D7 全部按建议执行，第 04–14 章的代码和教程已按结论重做，结论写成了 [ADR-0011](../adr/0011-pull-based-model-stream.md)（修订版）。实施时和第 8 节相比有几处调整，见文末“第四部分”。
 >
 > 参考来源：
 > - 本地的 **deepseek-harness-java**（下文简称 dsh），源码逐个看过；
@@ -176,7 +176,7 @@ ChatResponse chat(ChatRequest request);
 | 错误怎么到 Agent 循环 | `onError` 回调，要自己存下来再抛 | `onError` 回调，要自己存下来再抛 | `next()` 直接抛，普通 try/catch | 直接抛 |
 | Agent 循环的代码形状 | 回调 + 等待 | 订阅者 + CountDownLatch + 轮询 | 普通 while 循环 | 一行 |
 | 线程 | 适配器的后台线程调你 | 发布者的线程调你 | 你自己的线程读；适配器内部要一个读线程“推转拉” | 你自己的线程 |
-| 重试包装（第 07 章） | 要包一层 handler | 要写一个 Processor | 包一层 `ChatStream`，较直观 | 简单 |
+| 重试包装（第 08 章） | 要包一层 handler | 要写一个 Processor | 包一层 `ChatStream`，较直观 | 简单 |
 | 写测试 | 要等异步回调 | 要等异步完成 | 同步代码，直接断言 | 最简单 |
 | 新依赖 | 无 | 无（JDK Flow）/ Reactor（Spring AI） | 无 | 无 |
 | 背压 | 无 | 有（`request(n)`），但 dsh 直接 `request(Long.MAX_VALUE)` 没用上 | 天然有：不 `next()` 就不读 | — |
@@ -201,7 +201,7 @@ Anthropic Java SDK 也是同样的思路：流里是原始事件，要完整消�
 
 ```java
 // 领域层端口：只有一个生成入口
-public interface ILlmPort {
+public interface LlmChatModelAdapter {
     LlmStream stream(LlmRequest request);
 }
 public interface LlmStream extends AutoCloseable {
@@ -213,18 +213,18 @@ public sealed interface StreamChunk permits TextDelta, ReasoningDelta, ToolCallD
 
 // 领域服务：一次性拿完整消息（摘要、子代理汇报这些地方用）
 public final class LlmGenerationService {
-    public Message generate(LlmRequest r, CancellationToken cancel) throws LlmException { ... BlockAssembler ... }
+    public Message generate(LlmRequest r, CancellationToken cancel) throws LlmException { ... ResponseAssembler ... }
 }
 ```
 
 - 保留拉取式的优点：停止立即生效、不用轮询、Agent 循环是普通的 while 循环、测试简单；
-- 学 dsh 的优点：片段细（能显示思考过程和重试）、适配器只吐原始片段、`BlockAssembler` 在领域层；
+- 学 dsh 的优点：片段细（能显示思考过程和重试）、适配器只吐原始片段、`ResponseAssembler` 在领域层；
 - 和 Anthropic 官方 Java SDK、Claude Agent SDK 的形状一致（可迭代 + 可关闭）。
 
 **方案 2：完全照搬 dsh，用 `Flow.Publisher<StreamChunk>`**
 
 ```java
-public interface ILlmPort { Flow.Publisher<StreamChunk> stream(LlmRequest request); }
+public interface LlmChatModelAdapter { Flow.Publisher<StreamChunk> stream(LlmRequest request); }
 ```
 
 - 优点：和 dsh 一模一样，对照着读最方便；JDK 自带，不加依赖；
@@ -282,10 +282,10 @@ liharness-core
 ├── com.pubbge.liharness.domain
 │   ├── shared.model.valobj                       CancellationToken、CancelledException（各领域共用）
 │   ├── llm
-│   │   ├── adapter.port                          ILlmPort、LlmStream
+│   │   ├── adapter.port                          LlmChatModelAdapter、LlmStream
 │   │   ├── model.valobj                          LlmRequest、Message、Role、ToolCall、ToolSpec、TokenUsage、
 │   │   │                                         FinishReason、StreamChunk、LlmFailure/LlmException、ModelProfile
-│   │   └── service                               LlmGenerationService、BlockAssembler、RetryingLlmPort
+│   │   └── service                               LlmGenerationService、ResponseAssembler、RetryingLlmPort
 │   ├── agent
 │   │   ├── contract.outbound                     ITurnEventListener（原 TurnListener）
 │   │   ├── model.entity                          AgentOptions
@@ -344,7 +344,7 @@ liharness-app
     └── lifecycle                                 ParentWatchdog、ShutdownCoordinator
 ```
 
-### 9. 依赖规则（写成测试，第 04、05 章引入）
+### 9. 依赖规则（写成测试，第 04、06 章引入）
 
 ```text
 trigger → cases → domain ← infrastructure
@@ -360,9 +360,9 @@ app 负责把它们装配起来
 
 | 变化 | 影响 |
 |---|---|
-| 文件、命令、网页工具改成“工具在领域层 + 端口 + 基础设施实现” | 第 06 章要多写 3 个端口和 3 个实现，但工具本身可以用假端口测试，不碰真磁盘 |
-| `ChatModel` → `ILlmPort`，`ChatEvent` → `StreamChunk` | 第 04、05、07、11、12 章的代码和讲解要重写 |
-| `SessionStore` → `ISessionRepository` | 第 10 章 |
+| 文件、命令、网页工具改成“工具在领域层 + 端口 + 基础设施实现” | 第 07 章要多写 3 个端口和 3 个实现，但工具本身可以用假端口测试，不碰真磁盘 |
+| `ChatModel` → `LlmChatModelAdapter`，`ChatEvent` → `StreamChunk` | 第 04、06、08、12、13 章的代码和讲解要重写 |
+| `SessionStore` → `ISessionRepository` | 第 11 章 |
 | app 拆成 `cases` / `trigger` / `app` | 第 03 章起所有 Controller 的包都变；第 01 章的包结构说明要改 |
 | 你仓库里已经写好的 ch01–ch04 代码 | 包名要跟着改（我会给出迁移清单，或直接帮你改好工作区，不提交） |
 
@@ -374,7 +374,7 @@ app 负责把它们装配起来
 |---|---|---|---|
 | D1 | 流式接口的驱动方式 | 方案 1 拉取式 / 方案 2 `Flow.Publisher`（同 dsh）/ 方案 3 保持现状 | 方案 1 |
 | D2 | 片段粒度 | 照搬 dsh 的细粒度（文字、思考、工具调用、用量、结束、重试）/ 保持粗粒度 | 细粒度 |
-| D3 | 完整消息由谁拼 | 领域层 `BlockAssembler` / 适配器自己拼 | 领域层 |
+| D3 | 完整消息由谁拼 | 领域层 `ResponseAssembler` / 适配器自己拼 | 领域层 |
 | D4 | 接口命名 | 端口、仓储用 `I` 前缀（同 dsh）/ 不加前缀 | 同 dsh，加 `I` |
 | D5 | 文件、命令、网页工具是否走端口 | 走端口（同 dsh）/ 工具直接做 IO | 走端口 |
 | D6 | 插件契约的包名 | `domain.spi.tool`（同 dsh）/ `api.tool`（现在） | 同 dsh |
@@ -395,9 +395,9 @@ app 负责把它们装配起来
 | `AgentOptions` 在 `model.entity` | `model.valobj` | 没有身份、不可变 |
 | `IToolGate` | `ToolGate`，在 `domain.permission.service` | 它的实现全部是领域规则，不需要外部提供。`I` 前缀只给“由外部实现、装配注入”的端口和仓储 |
 | `DangerousCommandGuard` 在 `tool.shell` | `DangerousCommandGate`，在 `domain.permission.service` | 它是权限的一个规则来源，和其他 gate 一起汇总 |
-| 用 ArchUnit 检查分层 | 两个扫 import 语句的测试：core 的 `ArchitectureTest`（第 04 章）、app 的 `AppArchitectureTest`（第 05 章） | 规则只有几条，不想为此加一个依赖；原理也更直观。规则多起来再换 |
-| `infrastructure.adapter.settings` 放在 app 模块 | 领域：`domain.settings`（`Settings`、`ISettingsRepository`）；实现：core 的 `infrastructure.adapter.repository.FileSettingsRepository`；`SecretStore` 在 `cases.settings` | 设置的读写是纯 Java，不需要 Spring，放 core 才能和其他仓储一样单独测试；密钥只在内存里，不是持久化，属于用例层的状态 |
-| 模型工厂 | 新增端口 `ILlmPortFactory`（`domain.llm.adapter.port`），实现 `LlmAdapterFactory` | 用例 `ModelCase` 要按设置切换模型，但不能 import 基础设施 |
+| 用 ArchUnit 检查分层 | 两个扫 import 语句的测试：core 的 `ArchitectureTest`（第 04 章）、app 的 `AppArchitectureTest`（第 06 章） | 规则只有几条，不想为此加一个依赖；原理也更直观。规则多起来再换 |
+| `infrastructure.adapter.settings` 放在 app 模块（`settings.json` + `SecretStore`） | 领域：`domain.settings`（`Settings`、`ISettingsRepository`、`ICredentialRepository`）；实现：core 的 `infrastructure.adapter.repository.YamlSettingsRepository`、`YamlCredentialRepository`；文件在配置目录 `~/.liharness`（`app.config.HarnessHome`） | 设置的读写是纯 Java，不需要 Spring，放 core 才能和其他仓储一样单独测试。配置格式参考 DeepSeek Harness：`settings.yaml` + 单独的 `.credentials.yaml`（600），Key 也可以来自环境变量；不再用系统钥匙串，见 ADR-0012 |
+| 模型工厂 | 领域服务 `LlmProviderRegistry`（`domain.llm.service`）：内置 provider 目录 + 用户覆盖 + Key 查找；端口 `ILlmAdapterFactory` 按**协议**注册实现（`OpenAiAdapterFactory`、`MockAdapterFactory`）；模型配置的值对象在 `domain.llm.provider` | 用例 `ModelCase` 要按设置切换模型，但不能 import 基础设施；按协议而不是按厂商注册，加一家兼容 OpenAI 的服务只改配置。见 ADR-0012 |
 | `ISkillProviderPort` + `FileSystemSkillProvider`（含 SKILL.md 解析） | `ISkillFilePort` + `LocalSkillFileAdapter`；`SkillParser` 在 `domain.skill.service` | SKILL.md 的格式、名字规则、覆盖顺序都是规则，应该在领域层；端口只负责列目录、读文本、解析符号链接，`skill` 工具读技能目录里的文件也走它 |
 | `McpManager` 在 `infrastructure.adapter.mcp` | `McpServerRegistry` 在 `domain.tool.mcp.service`；新增 `IMcpClientFactory`、`IMcpConfigRepository`；值对象在 `domain.tool.mcp.model.valobj` | 服务器的状态机、代数、重名过滤是规则，和连接方式无关；这样用例和 Controller 也不必 import 基础设施，`McpServerRegistryTest` 不起进程就能测 |
 | `Json`、`ChildProcesses` 在 `infrastructure.support` | 只有 `ChildProcesses` 在 `infrastructure.support.process` | 见第一行 |
@@ -405,3 +405,5 @@ app 负责把它们装配起来
 | — | 新增用例 `SessionCase` | 删除会话要先确认没有回合在跑、再清掉内存里的读文件记录和会话授权，这是业务流程 |
 | `LiHarnessApplication` 在 `app` | 根包 `com.pubbge.liharness` | Spring 只扫描启动类所在的包及子包，放在 `app` 下扫不到 `trigger`、`cases` |
 | `diagnostics` 用例 | 没有，`DiagnosticsController` 直接读领域接口 | 只是把几个状态拼成一份文本，没有流程可编排 |
+| `domain.llm.model.valobj` 堆所有值对象 | `domain.llm` 下按功能分包：`message`（Message、Role）· `tool`（ToolCall、ToolSpec）· `stream`（StreamChunk、FinishReason）· `exchange`（LlmRequest、LlmResponse、TokenUsage）· `error`（LlmException）；`Texts` 移 `domain.shared.validate` | 值对象按类型堆在一个包不够内聚，按功能分包后每个包的类边界更清晰 |
+| — | 新增“接入真实模型”一章（第 05 章），放在 Agent Loop 之前 | 先让真实模型能说话，后面每一章都能用真实模型验证，而不是一直对着 Mock |

@@ -1,10 +1,10 @@
 package com.pubbge.liharness.domain.llm.service;
 
 import com.pubbge.liharness.domain.llm.adapter.port.LlmStream;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmException;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmResponse;
-import com.pubbge.liharness.domain.llm.model.valobj.StreamChunk;
-import com.pubbge.liharness.domain.llm.model.valobj.ToolCall;
+import com.pubbge.liharness.domain.llm.error.LlmException;
+import com.pubbge.liharness.domain.llm.exchange.LlmResponse;
+import com.pubbge.liharness.domain.llm.stream.StreamChunk;
+import com.pubbge.liharness.domain.llm.tool.ToolCall;
 import com.pubbge.liharness.domain.shared.cancel.CancelledException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public final class LlmStreams {
 
     /**
      * 把一个完整回复拆成片段：正文一段、每个工具调用一段、用量、结束。
-     * 和真实的流经过 {@link BlockAssembler} 拼回来的结果完全一样。
+     * 和真实的流经过 {@link ResponseAssembler} 拼回来的结果完全一样。
      */
     public static LlmStream of(LlmResponse response) {
         List<StreamChunk> chunks = new ArrayList<>();

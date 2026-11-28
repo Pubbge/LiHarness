@@ -1,11 +1,11 @@
 package com.pubbge.liharness.domain.llm.service;
 
-import com.pubbge.liharness.domain.llm.adapter.port.ILlmPort;
+import com.pubbge.liharness.domain.llm.adapter.port.LlmChatModelAdapter;
 import com.pubbge.liharness.domain.llm.adapter.port.LlmStream;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmException;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmRequest;
-import com.pubbge.liharness.domain.llm.model.valobj.LlmResponse;
-import com.pubbge.liharness.domain.llm.model.valobj.StreamChunk;
+import com.pubbge.liharness.domain.llm.error.LlmException;
+import com.pubbge.liharness.domain.llm.exchange.LlmRequest;
+import com.pubbge.liharness.domain.llm.exchange.LlmResponse;
+import com.pubbge.liharness.domain.llm.stream.StreamChunk;
 import com.pubbge.liharness.domain.shared.cancel.CancellationToken;
 import java.util.function.Consumer;
 
@@ -13,8 +13,8 @@ import java.util.function.Consumer;
  * 生成一次完整回复：打开流、读到 Finish、拼装、关闭。这是所有“调用模型”的地方共用的一段流程。
  *
  * <pre>
- *  ILlmPort.stream() ──► LlmStream ──next()──► 片段 ──► observer（比如推给界面）
- *                           ▲                    └──► BlockAssembler ──► LlmResponse
+ *  LlmChatModelAdapter.stream() ──► LlmStream ──next()──► 片段 ──► observer（比如推给界面）
+ *                           ▲                    └──► ResponseAssembler ──► LlmResponse
  *                           └── close() ◄── 取消令牌
  * </pre>
  *
@@ -26,10 +26,10 @@ import java.util.function.Consumer;
  */
 public final class LlmGenerationService {
 
-    private final ILlmPort llm;
+    private final LlmChatModelAdapter llmChatModelAdapter;
 
-    public LlmGenerationService(ILlmPort llm) {
-        this.llm = llm;
+    public LlmGenerationService(LlmChatModelAdapter llm) {
+        this.llmChatModelAdapter = llm;
     }
 
     /** 不关心中间片段，只要完整回复 */
@@ -47,8 +47,8 @@ public final class LlmGenerationService {
     public LlmResponse generate(LlmRequest request, CancellationToken cancel, Consumer<StreamChunk> observer)
             throws LlmException {
         cancel.throwIfCancelled();
-        BlockAssembler assembler = new BlockAssembler();
-        LlmStream stream = llm.stream(request);
+        ResponseAssembler assembler = new ResponseAssembler();
+        LlmStream stream = llmChatModelAdapter.stream(request);
         // 取消 = 关闭流：正在阻塞的 next() 会立刻抛 CancelledException
         CancellationToken.Registration onCancel = cancel.onCancel(stream::close);
         try {

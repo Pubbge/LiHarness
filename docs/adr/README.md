@@ -15,6 +15,7 @@ ADR 记录“**当时为什么这么决定**”。半年后回头看代码，你
 | [0009](0009-external-orchestration-via-adapters.md) | 外部框架（Spring AI、Google ADK）通过适配器接入，不进入内核 | 已采纳 |
 | [0010](0010-jsonl-sessions.md) | 会话存储改用 JSONL 文件 | 已采纳 |
 | [0011](0011-pull-based-model-stream.md) | 模型端口用“拉取式流 + 细粒度片段”，领域层拼装，取消由关闭流实现 | 已采纳 |
+| [0012](0012-config-home-and-model-registry.md) | 用户配置目录 `~/.liharness` + YAML + 模型注册表；Key 放 `.credentials.yaml` 或环境变量 | 已采纳 |
 
 ## 新增 ADR
 

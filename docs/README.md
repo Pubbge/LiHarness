@@ -23,7 +23,7 @@
 
 ## 教程章节
 
-**第一阶段：最小可用 Harness（MVP）** 是第 00–13 章，**第二阶段：完整 Harness** 是第 14–19 章。为什么分两阶段，见 [ADR-0008](adr/0008-two-phase-delivery.md)。
+**第一阶段：最小可用 Harness（MVP）** 是第 00–14 章，**第二阶段：完整 Harness** 是第 15–20 章。为什么分两阶段，见 [ADR-0008](adr/0008-two-phase-delivery.md)。
 
 | 阶段 | 章 | 标题 | 主要知识点 | 状态 |
 |---|---|---|---|---|
@@ -32,21 +32,22 @@
 | 一 | [02](guide/02-desktop-shell.md) | 桌面骨架与 Rust 进程管家 | Tauri 2、`TcpListener`、原子写文件、进程回收、健康轮询、退出钩子 | ✅ |
 | 一 | [03](guide/03-streaming.md) | 流式通道 | `SseEmitter`、回合线程池、Tauri HTTP 插件、事件归一化 | ✅ |
 | 一 | [04](guide/04-model-protocol.md) | 模型端口与 Mock 模型 | 分层与包名、`record` 不变量、拉取式流 `LlmStream`、细粒度片段与领域层拼装、取消 = 关闭流、架构测试 | ✅ |
-| 一 | [05](guide/05-agent-loop.md) | 最小 Agent Loop | 不变量、保险丝、事件、`plugin-api` 的 `Tool` 接口 | ✅ |
-| 一 | [06](guide/06-tools.md) | 工具系统 | 工具表、Schema 校验、规则与机制分离（文件 / 命令 / 网页端口）、工作区沙箱、错误即观察、进程树 | ✅ |
-| 一 | [07](guide/07-openai-model.md) | 对接真模型 | `HttpClient` 流式、推转拉、tool_calls 分片拼接、重试与退避、钥匙串 | ✅ |
-| 一 | [08](guide/08-observability.md) | 执行观测 | 回合日志、用量与耗时、停止、诊断信息 | ✅ |
-| 一 | [09](guide/09-guardrails.md) | 护栏与审批 | 规则优先级、权限模式、`CompletableFuture` 审批 | ✅ |
-| 一 | [10](guide/10-sessions.md) | 会话持久化 | JSONL 只追加、`force()`、崩溃容忍、历史修复、路径穿越 | ✅ |
-| 一 | [11](guide/11-context.md) | 上下文管理 | token 估算与校准、两级压缩、切分点、提示词段落、项目说明 | ✅ |
-| 一 | [12](guide/12-skills-todo-subagent.md) | 技能、待办与子代理 | 渐进式披露、无状态工具、嵌套 Agent Loop、取消传递 | ✅ |
-| 一 | [13](guide/13-mcp.md) | MCP 接入 | JSON-RPC、stdio、读线程与 pending 表、管道缓冲区、代数 | ✅ |
-| 二 | 14 | 多模型管理 | 注册表、默认值与覆盖 | 待编写 |
-| 二 | 15 | 插件 SDK 与扩展点 | 扩展点设计、钩子、自动撤销 | 待编写 |
-| 二 | 16 | 插件宿主 | `URLClassLoader`、清单、热插拔、工作台 | 重写中 |
-| 二 | 17 | 插件市场 | 目录、下载、校验 | 待编写 |
-| 二 | 18 | 原生能力 | Tauri command、dialog / opener / notification | 重写中 |
-| 二 | 19 | 打包发布与评测 | jlink、Tauri bundler、CI、评测集 | 重写中 |
+| 一 | [05](guide/05-real-model.md) | 接入真实模型 | 配置目录 `~/.liharness`、YAML 安全解析、模型注册表（内置目录 + 覆盖、按协议注册）、`HttpClient` 流式、推转拉、tool_calls 分片 | 新增 |
+| 一 | [06](guide/06-agent-loop.md) | 最小 Agent Loop | 不变量、保险丝、事件、`plugin-api` 的 `Tool` 接口 | ✅ |
+| 一 | [07](guide/07-tools.md) | 工具系统 | 工具表、Schema 校验、规则与机制分离（文件 / 命令 / 网页端口）、工作区沙箱、错误即观察、进程树 | ✅ |
+| 一 | [08](guide/08-model-settings.md) | 模型设置、重试与思考过程 | 重试装饰器与退避、思考过程、设置面板读写同一组 YAML、保留注释、原子写入 | ✅ |
+| 一 | [09](guide/09-observability.md) | 执行观测 | 回合日志、用量与耗时、停止、诊断信息 | ✅ |
+| 一 | [10](guide/10-guardrails.md) | 护栏与审批 | 规则优先级、权限模式、`CompletableFuture` 审批 | ✅ |
+| 一 | [11](guide/11-sessions.md) | 会话持久化 | JSONL 只追加、`force()`、崩溃容忍、历史修复、路径穿越 | ✅ |
+| 一 | [12](guide/12-context.md) | 上下文管理 | token 估算与校准、两级压缩、切分点、提示词段落、项目说明 | ✅ |
+| 一 | [13](guide/13-skills-todo-subagent.md) | 技能、待办与子代理 | 渐进式披露、无状态工具、嵌套 Agent Loop、取消传递 | ✅ |
+| 一 | [14](guide/14-mcp.md) | MCP 接入 | JSON-RPC、stdio、读线程与 pending 表、管道缓冲区、代数 | ✅ |
+| 二 | 15 | 多模型管理 | 会话级选模型、备用模型、新协议 | 待编写 |
+| 二 | 16 | 插件 SDK 与扩展点 | 扩展点设计、钩子、自动撤销 | 待编写 |
+| 二 | 17 | 插件宿主 | `URLClassLoader`、清单、热插拔、工作台 | 重写中 |
+| 二 | 18 | 插件市场 | 目录、下载、校验 | 待编写 |
+| 二 | 19 | 原生能力 | Tauri command、dialog / opener / notification | 重写中 |
+| 二 | 20 | 打包发布与评测 | jlink、Tauri bundler、CI、评测集 | 重写中 |
 
 第二阶段的章节还没有写，每一章要做什么已经整理在 [第二阶段需求](phase2-requirements.md) 里。“重写中”的章节以旧版教程为基础调整；旧版放在本地的 `guide/archive-v1/`，不上传。
 

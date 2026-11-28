@@ -1,7 +1,7 @@
 package com.pubbge.liharness.domain.llm.adapter.port;
 
-import com.pubbge.liharness.domain.llm.model.valobj.LlmException;
-import com.pubbge.liharness.domain.llm.model.valobj.StreamChunk;
+import com.pubbge.liharness.domain.llm.error.LlmException;
+import com.pubbge.liharness.domain.llm.stream.StreamChunk;
 import com.pubbge.liharness.domain.shared.cancel.CancelledException;
 
 /**

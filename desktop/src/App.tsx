@@ -2,11 +2,36 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import type { BackendStatus } from "./api/types";
+import { getModels, selectModel, type ModelsOverview } from "./api/models";
 import { Chat } from "./Chat";
+import { SettingsDialog } from "./components/SettingsDialog";
 import "./App.css";
 
 export default function App() {
   const [status, setStatus] = useState<BackendStatus>({ state: "starting" });
+  // 模型设置：输入框的模型选择器和设置页共用一份，任何一边改了另一边马上看到
+  const [models, setModels] = useState<ModelsOverview>();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [modelError, setModelError] = useState<string>();
+  const ready = status.state === "ready";
+
+  // 后端就绪后读一次；窗口重新获得焦点时再读一次（你可能刚用编辑器改过 settings.yaml）
+  useEffect(() => {
+    if (!ready) return;
+    const load = () => getModels().then(setModels).catch((e) => setModelError(String(e)));
+    load();
+    window.addEventListener("focus", load);
+    return () => window.removeEventListener("focus", load);
+  }, [ready]);
+
+  async function choose(model: string) {
+    try {
+      setModels(await selectModel(model));
+      setModelError(undefined);
+    } catch (e) {
+      setModelError(e instanceof Error ? e.message : String(e));
+    }
+  }
 
   useEffect(() => {
     // disposed：组件是否已经卸载。开发模式下 React 的 StrictMode 会故意把 effect 执行两遍
@@ -37,10 +62,24 @@ export default function App() {
     <main className="shell">
       <header className="topbar">
         <h1>LiHarness</h1>
-        <StatusBadge status={status} />
+        <div className="topbar-right">
+          <StatusBadge status={status} />
+          {ready && (
+            <button type="button" className="icon-button" onClick={() => setSettingsOpen(true)}>
+              ⚙ 设置
+            </button>
+          )}
+        </div>
       </header>
       {/* 后端就绪后才显示对话界面 */}
-      {status.state === "ready" ? <Chat /> : <Splash status={status} />}
+      {ready ? (
+        <Chat models={models} modelError={modelError} onSelectModel={choose} onOpenSettings={() => setSettingsOpen(true)} />
+      ) : (
+        <Splash status={status} />
+      )}
+      {settingsOpen && models && (
+        <SettingsDialog overview={models} onChange={setModels} onClose={() => setSettingsOpen(false)} />
+      )}
     </main>
   );
 }

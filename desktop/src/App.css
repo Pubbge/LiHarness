@@ -177,3 +177,359 @@ body {
   opacity: 0.5;
   cursor: default;
 }
+
+/* ===== 第 05 章：模型选择器和设置页 ===== */
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-button {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ok-text {
+  color: #15803d;
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.composer-error {
+  margin: 0;
+  padding: 0 16px 8px;
+}
+
+/* 输入框右边的模型选择器：菜单从按钮上方弹出 */
+.model-picker {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.composer .model-picker button.model-current {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.model-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  min-width: 240px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--assistant-bg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 10;
+}
+
+.model-group {
+  padding: 6px 10px 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.composer .model-menu button.model-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+
+.composer .model-menu button.model-item:hover {
+  background: var(--border);
+}
+
+.composer .model-menu button.model-item.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* 设置页：盖在整个窗口上，左边栏目、右边内容 */
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+
+.settings-dialog {
+  width: min(760px, 92vw);
+  height: min(560px, 86vh);
+  display: flex;
+  border-radius: 14px;
+  background: var(--assistant-bg);
+  overflow: hidden;
+}
+
+.settings-nav {
+  width: 170px;
+  padding: 18px 10px;
+  border-right: 1px solid var(--border);
+}
+
+.settings-nav h2 {
+  margin: 0 8px 16px;
+  font-size: 18px;
+}
+
+.settings-nav-item {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--muted);
+}
+
+.settings-nav-item.active {
+  background: var(--border);
+  color: inherit;
+}
+
+.settings-body {
+  flex: 1;
+  padding: 18px 22px;
+  overflow-y: auto;
+}
+
+.settings-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-title h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.settings-body button {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.settings-body button.ghost {
+  border: none;
+}
+
+.settings-body button.primary {
+  background: var(--user-bg);
+  border-color: var(--user-bg);
+  color: #ffffff;
+}
+
+.settings-body button.danger {
+  color: #b91c1c;
+  margin-right: auto;
+}
+
+.provider-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.provider-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: 0 6px 0 10px;
+}
+
+.dot.good {
+  background: #22c55e;
+}
+
+.dot.bad {
+  background: #ef4444;
+}
+
+.settings-body button.add-provider {
+  padding: 12px;
+  border: 1px dashed var(--muted);
+  border-radius: 12px;
+  color: var(--muted);
+}
+
+.provider-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.provider-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.provider-editor label.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.provider-editor select,
+.provider-editor input:not([type="checkbox"]) {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+}
+
+.provider-editor input:disabled {
+  color: var(--muted);
+}
+
+.editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ===== 第 06 章：工具卡片、提示、用量 ===== */
+
+.bubble.assistant {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tool-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: normal;
+}
+
+.tool-card.error {
+  border-color: #fca5a5;
+}
+
+.tool-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tool-name {
+  font-weight: 600;
+}
+
+.tool-summary {
+  flex: 1;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tool-status {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tool-progress {
+  padding: 0 10px 6px 32px;
+  color: var(--muted);
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.tool-body {
+  padding: 0 10px 8px;
+}
+
+.tool-label {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tool-body pre {
+  margin: 4px 0 0;
+  padding: 8px;
+  max-height: 240px;
+  overflow: auto;
+  border-radius: 6px;
+  background: rgba(127, 127, 127, 0.08);
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.notice {
+  font-size: 13px;
+  color: #a16207;
+}
+
+.error-text {
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--muted);
+}
