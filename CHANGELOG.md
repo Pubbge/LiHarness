@@ -11,12 +11,26 @@
 - 教程第 03 章：流式通道
 - 架构图（SVG）：总体架构、后端模块、扩展点、插件生命周期、两阶段路线、启动与退出时序、对话回合
 - ADR-0007：固定内核 + 扩展点插件；ADR-0008：分两阶段交付
+- 教程第 04–13 章：协议层、Agent Loop、工具系统、真实模型、执行观测、护栏与审批、会话持久化、上下文管理、技能 / 待办 / 子代理、MCP 客户端（第一阶段全部完成）
+- 第二阶段需求文档（第 15–20 章，附第三阶段：外部编排）
+- ADR-0009：外部框架通过适配器接入；ADR-0010：会话存储改用 JSONL；ADR-0011：模型端口用拉取式流 + 细粒度片段；设计评审文档 `docs/design/model-stream-and-packages.md`
+- 教程新增第 05 章“接入真实模型”：配置目录 `~/.liharness`（`settings.yaml` + `.credentials.yaml`）、模型注册表（内置 provider + 用户覆盖、按协议注册适配器）、OpenAI 兼容适配器（ADR-0012）
 
 ### Changed
 - **架构调整**：放弃“万物皆插件”的微内核（ADR-0003 废弃），改为固定内核 + 扩展点插件。插件只能增加工具、提示词段落、钩子、事件订阅和技能，不能替换模型适配、Agent 循环、会话存储等底层设施
-- **路线调整**：分两阶段交付。第一阶段（第 00–13 章）做最小可用 Harness，第二阶段（第 14–19 章）做插件 SDK、插件宿主、插件市场与多模型
+- **路线调整**：分两阶段交付。第一阶段（第 00–14 章）做最小可用 Harness，第二阶段（第 15–20 章）做插件 SDK、插件宿主、插件市场与多模型
 - 第 01 章不再引入 H2 与 Flyway，改为在会话持久化一章需要时再引入
 - 后端模块调整为 `liharness-core`（纯 Java 智能体内核）+ `liharness-app`，第二阶段加入 `liharness-plugin-api`
+- **模型接口重新设计**（ADR-0011）：`ChatModel.stream(request)` 返回拉取式的 `ChatStream`，不再接收监听器和取消令牌；取消由调用方关闭流实现
+- **模型端口第二次修订**（ADR-0011 修订版）：`LlmChatModelAdapter.stream()` 是唯一的生成入口；流里是细粒度的 `StreamChunk`（正文、思考、工具调用碎片、用量、重试、结束）；适配器只翻译，`ResponseAssembler` 在领域层统一拼装；`LlmGenerationService` 统一读流、挂取消、关流
+- **包结构重新设计**：参考 deepseek-harness-java 按层分包：`domain`（领域，含 `adapter.port` / `adapter.repository` / `model.valobj` / `model.entity` / `service`）、`infrastructure`（端口实现）、`cases`（用例）、`trigger`（HTTP、SSE、过滤器）、`app`（装配与生命周期）；端口和仓储用 `I` 前缀；插件契约在 `domain.spi.tool`；分层规则由 `ArchitectureTest`、`AppArchitectureTest` 检查
+- 文件、命令、网页工具通过端口（`IFsPort`、`IShellExecutor`、`IWebFetchPort`）访问外部；项目说明、技能文件、MCP 连接与配置也都改为端口，规则留在领域层
+- 推理模型的思考过程单独显示（默认折叠，不进对话历史）；自动重试时界面显示“正在重试”
+- `liharness-plugin-api` 提前到第 06 章引入，第一阶段的 `Tool` 接口就放在里面
+- **章节顺延**：新增第 05 章后，原第 05–13 章顺延为第 06–14 章，第二阶段为第 15–20 章；原第 07 章“真实模型、设置与钥匙串”拆开：适配器和注册表移到第 05 章，第 08 章只讲设置面板、自动重试和思考过程
+- **设置与 Key 改用配置目录**（ADR-0012）：不再用应用数据目录里的 `settings.json` 和系统钥匙串；会话、技能、`mcp.json` 也都放进 `~/.liharness`
+- llm 领域的值对象按功能分包（`message`、`tool`、`stream`、`exchange`、`error`、`provider`）；模型端口改名 `LlmChatModelAdapter`，拼装器改名 `ResponseAssembler`
+- 会话存储从 H2 + Flyway 改为 JSONL 文件（ADR-0010 取代 ADR-0006）
 
 ### Security
 - 后端启动的所有子进程（`run_command`、MCP 服务器）不再继承 `LIHARNESS_` 开头的环境变量，避免启动令牌泄露到模型上下文

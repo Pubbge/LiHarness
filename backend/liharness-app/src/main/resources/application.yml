@@ -9,6 +9,8 @@ spring:
 server:
   address: 127.0.0.1          # 只监听本机回环地址
   shutdown: graceful          # 关闭时等进行中的请求完成
+  error:
+    include-message: always   # 错误响应体里带上我们写的说明（前端要显示 409 的原因）。只监听本机，不会泄露给外网
 
 li-harness:
   data-dir: ${user.home}/.liharness-dev

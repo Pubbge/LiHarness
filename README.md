@@ -39,10 +39,10 @@ LiHarness 分两个阶段实现：
 | 🌊 流式输出 | OpenAI 兼容协议，SSE 增量推送文本、工具调用、审批请求与错误 | 一 |
 | 🛠️ 内置工具 | 文件读写搜索、命令执行、网页获取、计算器等，工作区沙箱 | 一 |
 | 🛡️ 护栏与审批 | 策略链 + 人工审批（human-in-the-loop），白名单外的命令必须用户批准 | 一 |
-| 📊 全程可观测 | 执行时序图、上下文构成、token 水位，每一步都看得见 | 一 |
-| 💾 多会话 | H2 文件库 + 追加式事件日志，重启不丢 | 一 |
-| 🧠 上下文工程 | 提示词组装、上下文统计、阈值压缩 | 一 |
-| 🔌 技能 / 子代理 / MCP | 渐进式披露的技能、独立上下文的子代理、MCP 服务器接入 | 一 |
+| 📊 全程可观测 | 工具卡片与进度、回合日志、token 用量与上下文水位、诊断信息 | 一 |
+| 💾 多会话 | JSONL 文件，只追加、崩溃容忍，每个会话独立的工作区 | 一 |
+| 🧠 上下文工程 | 提示词段落、项目说明文件、token 估算与校准、两级压缩 | 一 |
+| 🔌 技能 / 待办 / 子代理 / MCP | 渐进式披露的技能、待办清单、独立上下文的子代理、MCP 服务器接入 | 一 |
 | 🧩 插件 SDK | 工具、提示词段落、钩子、事件订阅、技能五个扩展点；停用时自动撤销 | 二 |
 | 📦 插件市场 | 外部插件 jar 热插拔、类加载隔离、目录与校验 | 二 |
 | 🗂️ 多模型 | 模型列表、默认模型、每个会话单独选择 | 二 |
@@ -61,7 +61,7 @@ LiHarness 分两个阶段实现：
 | 后端语言 | Java 17（LTS） |
 | 应用框架 | Spring Boot 3.4.1（只用于应用层，智能体内核与插件 SDK 不依赖 Spring） |
 | 构建 | Maven 多模块 + Maven Wrapper |
-| 存储 | H2 文件数据库 + Flyway 迁移 |
+| 存储 | JSONL 文件（会话）+ YAML 文件（设置，`~/.liharness`）+ `.credentials.yaml` 或环境变量（API Key） |
 | 桌面外壳 | Tauri 2（Rust） |
 | 前端 | React 19 + TypeScript + Vite |
 | 通信 | 本机 HTTP（REST + SSE），每次启动生成令牌 |
@@ -76,13 +76,13 @@ LiHarness 分两个阶段实现：
 | 阶段 | 章节 |
 |---|---|
 | 一 · 地基 | [00 环境准备](docs/guide/00-setup.md) · [01 后端骨架](docs/guide/01-backend-skeleton.md) · [02 桌面骨架与 Rust 进程管家](docs/guide/02-desktop-shell.md) · [03 流式通道](docs/guide/03-streaming.md) |
-| 一 · Agent 核心 | 04 协议层与 Mock 模型 · 05 最小 Agent Loop · 06 工具系统 · 07 对接真模型 |
-| 一 · 工程化 | 08 执行观测 · 09 护栏与审批 · 10 会话持久化 · 11 上下文管理 |
-| 一 · 进阶能力 | 12 技能、待办与子代理 · 13 MCP 接入 → **v0.1 MVP** |
-| 二 · 可扩展平台 | 14 多模型管理 · 15 插件 SDK 与扩展点 · 16 插件宿主 · 17 插件市场 |
-| 二 · 交付 | 18 原生能力 · 19 打包发布与评测 → **v1.0** |
+| 一 · Agent 核心 | [04 模型端口与 Mock 模型](docs/guide/04-model-protocol.md) · [05 接入真实模型](docs/guide/05-real-model.md) · [06 最小 Agent Loop](docs/guide/06-agent-loop.md) · [07 工具系统](docs/guide/07-tools.md) · [08 模型设置、重试与思考过程](docs/guide/08-model-settings.md) |
+| 一 · 工程化 | [09 执行观测](docs/guide/09-observability.md) · [10 护栏与审批](docs/guide/10-guardrails.md) · [11 会话持久化](docs/guide/11-sessions.md) · [12 上下文管理](docs/guide/12-context.md) |
+| 一 · 进阶能力 | [13 技能、待办与子代理](docs/guide/13-skills-todo-subagent.md) · [14 MCP 接入](docs/guide/14-mcp.md) → **v0.1 MVP** |
+| 二 · 可扩展平台 | 15 多模型管理 · 16 插件 SDK 与扩展点 · 17 插件宿主 · 18 插件市场 |
+| 二 · 交付 | 19 原生能力 · 20 打包发布与评测 → **v1.0**（每章要做什么见 [第二阶段需求](docs/phase2-requirements.md)） |
 
-> 第 00–03 章已完成；其余章节按两阶段方案重写中，进度见 [路线图](docs/roadmap.md)。每章末尾的 git tag（如 `m05-agent-loop`）可以作为进度检查点。
+> 第一阶段（第 00–14 章）已全部写完，第二阶段的需求已整理好，进度见 [路线图](docs/roadmap.md)。每章末尾的 git tag（如 `m06-agent-loop`）可以作为进度检查点。
 
 ## 目录结构
 
@@ -90,9 +90,9 @@ LiHarness 分两个阶段实现：
 LiHarness/
 ├── pom.xml                          # Maven 父工程
 ├── backend/
-│   ├── liharness-core/              # 智能体内核（纯 Java）：循环、模型、工具、护栏、上下文、会话端口……
-│   ├── liharness-app/               # Spring Boot 应用：REST + SSE、H2、设置与密钥；（二）插件宿主
-│   └── liharness-plugin-api/        # （二）插件 SDK：Plugin、PluginContext、Tool、HookPoint
+│   ├── liharness-plugin-api/        # 对外契约（只依赖 JDK）：Tool 接口；（二）Plugin、PluginContext、HookPoint
+│   ├── liharness-core/              # 智能体内核（纯 Java）：模型、Agent 循环、工具、权限、会话、上下文、技能、MCP
+│   └── liharness-app/               # Spring Boot 应用：REST + SSE、模型与设置的用例、组装内核；（二）插件宿主
 ├── desktop/                         # Tauri 2 应用
 │   ├── src/                         # React 19 + TypeScript
 │   └── src-tauri/                   # Rust 进程管家与原生能力

@@ -51,6 +51,7 @@ docs(guide): 第 02 章补充 Windows 下的进程回收说明
 4. **插件注册的一切都要可撤销。** 每次注册都返回 `Registration`，由插件上下文统一回收，插件停用后不能留下任何东西。
 5. **工具出错不中断 Agent 循环。** 把错误作为观察交给模型，让它自己修正。
 6. **前端不执行命令。** 任何本机操作要么走后端（受护栏与审批约束），要么走 Tauri command（固定的、有限的能力）。
+7. **按层放代码，依赖只指向领域层。** `trigger → cases → domain ← infrastructure`，`app` 只做装配。规则（能做什么、不能做什么）写在 `domain`，和操作系统、网络、文件格式打交道的写在 `infrastructure`，并通过 `domain` 里 `I` 开头的端口或仓储接口使用。`ArchitectureTest`、`AppArchitectureTest` 会检查（见 [架构设计](docs/architecture.md) 第 4 节）。
 
 ## 代码风格
 

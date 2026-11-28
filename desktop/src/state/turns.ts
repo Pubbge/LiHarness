@@ -1,66 +1,126 @@
 import { create } from "zustand";
 import type { AgentEvent } from "../api/types";
 
-/** 对话列表里的一项：用户的一句话，或助手的一个回答 */
-export type ChatItem =
-  | { kind: "user"; text: string }
-  | { kind: "assistant"; turnId?: string; text: string; status: "streaming" | "done" | "error"; model?: string };
+/** 助手回答里的一段文字 */
+export type TextPart = { kind: "text"; text: string };
+
+/** 助手回答里的一次工具调用，显示成一张卡片 */
+export type ToolPart = {
+  kind: "tool";
+  callId: string;
+  name: string;
+  args: string;
+  status: "running" | "ok" | "error" | "cancelled";
+  /** 最新的进度消息（比如命令输出的最后一行） */
+  progress?: string;
+  result?: string;
+  durationMs?: number;
+};
+
+export type Part = TextPart | ToolPart;
+
+/**
+ * 一个助手回答。
+ *
+ * 为什么是 parts 列表而不是一个 text 字符串：一个回合里模型可能“先说一句 → 调工具 → 再说一句 → 再调工具”，
+ * 文字和工具调用是交错出现的。按到达顺序存成列表，界面就能按真实顺序显示。
+ */
+export type AssistantItem = {
+  kind: "assistant";
+  turnId?: string;
+  model?: string;
+  parts: Part[];
+  status: "streaming" | "done" | "error";
+  /** 非正常结束的提示（达到最大步数、输出被截断） */
+  notice?: string;
+  error?: string;
+  usage?: { input: number; output: number; steps: number };
+};
+
+export type ChatItem = { kind: "user"; text: string } | AssistantItem;
 
 export type ChatState = { items: ChatItem[]; busy: boolean };
 
+/** 回合结束时，还在 running 的工具卡片统一标成 cancelled，否则会一直转圈 */
+function settleTools(parts: Part[]): Part[] {
+  return parts.map((p) => (p.kind === "tool" && p.status === "running" ? { ...p, status: "cancelled" } : p));
+}
+
+/** 追加文字：最后一段是文字就接上，否则新开一段 */
+function appendText(parts: Part[], text: string): Part[] {
+  const last = parts[parts.length - 1];
+  if (last && last.kind === "text") {
+    return [...parts.slice(0, -1), { kind: "text", text: last.text + text }];
+  }
+  return [...parts, { kind: "text", text }];
+}
+
+/** 更新某个工具卡片 */
+function updateTool(parts: Part[], callId: string, patch: Partial<ToolPart>): Part[] {
+  return parts.map((p) => (p.kind === "tool" && p.callId === callId ? { ...p, ...patch } : p));
+}
+
 /**
- * 事件归一化：旧状态 + 一个事件 → 新状态。
- *
- * 所有后端事件都只走这一个函数，界面只根据状态渲染。
- * 它是“纯函数”：不改传进来的对象、不发请求、不碰界面，所以测试非常简单（见 turns.test.ts）。
- * 后面加新事件类型时，只需要在这里加一个 case。
+ * 事件归一化：旧状态 + 一个事件 → 新状态。纯函数，所有后端事件都只走这里。
  */
 export function applyEvent(state: ChatState, e: AgentEvent): ChatState {
-  const items = [...state.items]; // 复制一份，不改旧数组（React 靠“新对象”判断需要重新渲染）
+  const items = [...state.items];
   const last = items[items.length - 1];
-  // 事件总是作用于最后一个“助手回答”
-  const current = last && last.kind === "assistant" ? last : undefined;
+  if (!last || last.kind !== "assistant") return state; // 没有正在进行的回答，忽略
+  let a: AssistantItem = last;
 
-  // switch 里 TypeScript 会自动收窄 e 的类型：case "delta" 里 e.text 合法，e.answer 会报错
   switch (e.type) {
     case "turn_started":
-      if (current) items[items.length - 1] = { ...current, turnId: e.turnId };
-      return { ...state, items };
+      a = { ...a, turnId: e.turnId, model: e.model };
+      break;
     case "delta":
-      if (current) items[items.length - 1] = { ...current, text: current.text + e.text };
-      return { ...state, items };
+      a = { ...a, parts: appendText(a.parts, e.text) };
+      break;
+    case "tool_call":
+      a = { ...a, parts: [...a.parts, { kind: "tool", callId: e.callId, name: e.name, args: e.arguments, status: "running" }] };
+      break;
+    case "tool_progress":
+      a = { ...a, parts: updateTool(a.parts, e.callId, { progress: e.message }) };
+      break;
+    case "tool_result":
+      a = {
+        ...a,
+        parts: updateTool(a.parts, e.callId, { status: e.ok ? "ok" : "error", result: e.content, durationMs: e.durationMs }),
+      };
+      break;
     case "done":
-      if (current) items[items.length - 1] = { ...current, status: "done", model: e.model };
+      a = {
+        ...a,
+        status: "done",
+        parts: settleTools(a.parts),
+        notice: e.notice || undefined,
+        usage: { input: e.inputTokens, output: e.outputTokens, steps: e.steps },
+      };
+      items[items.length - 1] = a;
       return { items, busy: false };
     case "error":
-      if (current)
-        items[items.length - 1] = {
-          ...current,
-          status: "error",
-          text: current.text + (e.cancelled ? "\n（已停止）" : `\n出错：${e.message}`),
-        };
+      a = { ...a, status: "error", parts: settleTools(a.parts), error: e.cancelled ? "已停止" : e.message };
+      items[items.length - 1] = a;
       return { items, busy: false };
   }
+  items[items.length - 1] = a;
+  return { ...state, items };
 }
 
 type Store = ChatState & {
-  /** 用户发送一句话：加一条用户消息和一条空的助手回答（等着被 delta 填充） */
+  /** 用户发送一句话：加一条用户消息和一个空的助手回答 */
   begin: (input: string) => void;
   /** 收到一个后端事件 */
   apply: (e: AgentEvent) => void;
 };
 
-/**
- * 全局状态（zustand）。任何组件用 useChat() 就能读到同一份对话状态。
- * zustand 比 Redux 简单得多：create 里返回初始状态和修改状态的方法即可。
- */
 export const useChat = create<Store>((set) => ({
   items: [],
   busy: false,
   begin: (input) =>
     set((s) => ({
       busy: true,
-      items: [...s.items, { kind: "user", text: input }, { kind: "assistant", text: "", status: "streaming" }],
+      items: [...s.items, { kind: "user", text: input }, { kind: "assistant", parts: [], status: "streaming" }],
     })),
   apply: (e) => set((s) => applyEvent(s, e)),
 }));

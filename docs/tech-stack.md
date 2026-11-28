@@ -9,7 +9,7 @@
 | 后端语言 | **Java 17**（LTS） | 团队熟悉、企业环境普遍支持、生态成熟 |
 | 应用框架 | **Spring Boot 3.4.1** | REST、SSE、配置、数据访问、健康检查一站式；企业开发者熟悉 |
 | 构建 | **Maven 多模块 + Maven Wrapper** | 模块边界清晰；Wrapper 保证每个人用同一版本 Maven |
-| 存储 | **H2 文件数据库 + Flyway** | 嵌入式、零运维、单文件；Flyway 管理表结构演进 |
+| 存储 | **JSONL 文件**（会话）+ YAML 文件（设置，`~/.liharness/settings.yaml`）+ `.credentials.yaml` 或环境变量（API Key） | 访问模式只有“追加”和“整体读出”；零依赖、可直接查看、可手改；见 [ADR-0010](adr/0010-jsonl-sessions.md)、[ADR-0012](adr/0012-config-home-and-model-registry.md) |
 | 桌面外壳 | **Tauri 2（Rust）** | 原生进程管理与本机能力，安装包远小于 Electron |
 | 前端 | **React 19 + TypeScript + Vite** | 生态最大；流式 Markdown、代码高亮、图表都有成熟方案 |
 | 前后端通信 | **本机 HTTP：REST + SSE，带启动令牌** | 标准协议、可调试、可测试，支持多客户端 |
@@ -43,8 +43,10 @@ Tauri 的后端只能是 Rust，所以 Java 以**独立子进程**运行，由 R
 
 所以：
 
-- `liharness-core`（第一阶段起）、`liharness-plugin-api`（第二阶段）：**纯 Java 17**，除 Jackson 外不引入第三方依赖（日志用 JDK 自带的 `System.Logger`，Spring Boot 会把它桥接到 Logback）；
-- `liharness-app`：Spring Boot 负责 HTTP、SSE、配置、H2、健康检查，并把内核作为普通 Bean 组装起来。
+- `liharness-plugin-api`（第 06 章起）、`liharness-core`（第 04 章起）：**纯 Java 17**，除 Jackson、SnakeYAML 外不引入第三方依赖（日志用 JDK 自带的 `System.Logger`，Spring Boot 会把它桥接到 Logback）；
+- `liharness-app`：Spring Boot 负责 HTTP、SSE、配置、健康检查，并把内核作为普通 Bean 组装起来。
+
+**AI 框架**（Spring AI、Google ADK 等）不进入内核：模型调用手写在 `infrastructure.adapter.llm` 里（JDK `HttpClient`），以后需要时通过适配器接入，见 [ADR-0009](adr/0009-external-orchestration-via-adapters.md)。
 
 内核和扩展点的划分见 [ADR-0007](adr/0007-fixed-core-extension-points.md)。
 
@@ -72,10 +74,10 @@ Tauri 的后端只能是 Rust，所以 Java 以**独立子进程**运行，由 R
 | 依赖 | 用途 | 引入章节 |
 |---|---|---|
 | `spring-boot-starter-web` | REST、SSE（`SseEmitter`） | 01 |
-| `spring-boot-starter-jdbc` + `h2` + `flyway-core` | 本地数据库 | 12 |
-| `jackson-databind` | JSON（Spring Boot 3.4 使用 Jackson 2） | 05 |
+| `jackson-databind` | JSON（Spring Boot 3.4 使用 Jackson 2） | 05（core 模块） |
+| `snakeyaml` | 读写 `~/.liharness/settings.yaml`、`.credentials.yaml`（只用 `SafeConstructor`） | 05 |
 | JUnit 5 + AssertJ | 测试 | 01 |
-| MCP / 技能 / 外部插件 | 不引入新依赖：`ProcessBuilder`、`URLClassLoader` + Jackson 实现 | 12、13、16 |
+| 会话 / 技能 / MCP / 外部插件 | 不引入新依赖：JSONL 文件、`ProcessBuilder`、`URLClassLoader` + Jackson 实现 | 11、13、14、17 |
 
 ### 桌面
 
@@ -86,10 +88,10 @@ Tauri 的后端只能是 Rust，所以 Java 以**独立子进程**运行，由 R
 | 系统命令 `ps` / PowerShell | 回收遗留进程时核对进程命令行（不额外引入依赖） | 02 |
 | `reqwest`（Rust 侧） | 健康检查轮询、优雅关闭 | 02 |
 | `@tauri-apps/plugin-http` | 前端调用后端 REST / SSE | 03 |
-| `@tauri-apps/plugin-dialog` / `-opener` / `-notification` | 目录选择、外部跳转、系统通知 | 18 |
-| `react-markdown`、`rehype-highlight` | 渲染模型回答 | 06 |
+| `@tauri-apps/plugin-dialog` | 新建会话时选择工作区目录 | 11 |
+| `@tauri-apps/plugin-opener` / `-notification` | 外部跳转、系统通知 | 19 |
+| `react-markdown`、`rehype-highlight` | 渲染模型回答 | 07 |
 | `zustand` | 前端状态管理 | 03 |
-| `keyring`（Rust 侧） | 系统钥匙串存 API Key | 12 |
 
 ## 6. 版本基线
 

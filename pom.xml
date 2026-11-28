@@ -11,8 +11,9 @@
     <name>LiHarness</name>
 
     <modules>
-        <module>backend/liharness-app</module>
+        <module>backend/liharness-plugin-api</module>
         <module>backend/liharness-core</module>
+        <module>backend/liharness-app</module>
     </modules>
 
     <properties>
